@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
@@ -23,9 +24,23 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
 		public void InsertRecord(T record)
 		{
-			Console.WriteLine("Inserting record");
 			_collection.InsertOne(record);
-			Console.WriteLine("Insert done");
+		}
+
+		public T Find(ObjectId id)
+		{
+			var filter = Builders<T>.Filter.Eq("_id", id);
+			var found = _collection.Find(filter).First();
+
+			return found;
+		}
+
+		public async Task<T> FindAsync(ObjectId id)
+		{
+			var filter = Builders<T>.Filter.Eq("_id", id);
+			var found = await _collection.FindAsync(filter);
+
+			return found.First();
 		}
 	}
 }
