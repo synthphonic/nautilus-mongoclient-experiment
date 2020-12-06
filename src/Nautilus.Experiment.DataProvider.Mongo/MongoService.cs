@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
+using MongoDB.Bson.Serialization.Conventions;
 
 namespace PassKeepr.ConsoleService
 {
@@ -22,6 +23,12 @@ namespace PassKeepr.ConsoleService
             _databaseName = databaseName;
         }
 
+        public void UseCamelCase()
+		{
+            var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
+            ConventionRegistry.Register("camelCase", conventionPack, t => true);
+		}
+        
         public void Connect()
         {
             if (_mongClient == null)
