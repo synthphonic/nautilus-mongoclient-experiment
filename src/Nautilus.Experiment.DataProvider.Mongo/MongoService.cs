@@ -1,3 +1,7 @@
+/*
+ * References
+ *  https://stackoverflow.com/questions/32703051/properly-shutting-down-mongodb-database-connection-from-c-sharp-2-1-driver
+ */
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +57,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             foreach (var item in _schemaTypes)
             {
                 var instance = (MongoBaseSchema)Activator.CreateInstance(item, _database);
+                instance.CreateIndexes();
+
                 _list.Add(instance);
             }
         }
