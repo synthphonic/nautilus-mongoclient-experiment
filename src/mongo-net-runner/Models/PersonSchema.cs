@@ -1,6 +1,6 @@
 ﻿using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
-namespace MongoService.RunnerConsole.Models.Schema
+namespace MongoService.RunnerConsole.Models
 {
 	public class PersonSchema : MongoBaseSchema<Person>
 	{

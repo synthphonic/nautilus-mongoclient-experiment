@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Models\Schema\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nautilus.Experiment.DataProvider.Mongo\Nautilus.Experiment.DataProvider.Mongo.csproj" />

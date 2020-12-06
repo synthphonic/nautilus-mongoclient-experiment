@@ -1,6 +1,5 @@
 ﻿using System;
 using MongoService.RunnerConsole.Models;
-using MongoService.RunnerConsole.Models.Schema;
 using Nautilus.Experiment.DataProvider.Mongo.Extensions;
 
 namespace MongoService.RunnerConsole
