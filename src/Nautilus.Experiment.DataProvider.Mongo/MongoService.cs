@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
-using MongoDB.Bson.Serialization.Conventions;
 
-namespace PassKeepr.ConsoleService
+namespace Nautilus.Experiment.DataProvider.Mongo
 {
 	public class MongoService
     {
