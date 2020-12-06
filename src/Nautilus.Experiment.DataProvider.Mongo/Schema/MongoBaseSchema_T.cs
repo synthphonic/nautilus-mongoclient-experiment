@@ -30,7 +30,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		public T Find(ObjectId id)
 		{
 			var filter = Builders<T>.Filter.Eq("_id", id);
-			var found = _collection.Find(filter).First();
+			var found = _collection.Find(filter).FirstOrDefault();
 
 			return found;
 		}
@@ -40,7 +40,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			var filter = Builders<T>.Filter.Eq("_id", id);
 			var found = await _collection.FindAsync(filter);
 
-			return found.First();
+			return await found.FirstOrDefaultAsync();
 		}
 	}
 }
