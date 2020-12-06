@@ -57,15 +57,15 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             }
         }
 
-        public MongoBaseSchema<T> GetSchema<T>() where T : class,new()
+        public MongoBaseSchema<TModel> GetSchema<TModel>() where TModel : class,new()
 		{
-            Console.WriteLine($"Fetching schema for {new T().GetType().FullName}");
+            Console.WriteLine($"Fetching schema for {new TModel().GetType().FullName}");
 
-            var instance = new T();
+            var instance = new TModel();
             var schemaName = instance.GetType().Name.ToLower();
             var found = _list.FirstOrDefault(x => x.TableNameMongo.Equals(schemaName));
 
-            return found as MongoBaseSchema<T>;
+            return found as MongoBaseSchema<TModel>;
         }
     }
 }
