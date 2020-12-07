@@ -1,7 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
+using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo;
 using NUnit.Framework;
 
@@ -14,13 +14,7 @@ namespace MongoClient.Tests
 		[OneTimeSetUp]
 		public void Setup()
 		{
-			const string ConnectionString = "mongodb://localhost:27017";
-			const string databaseName = "passKeepr";
-
-			_mongoService = new MongoService(ConnectionString, databaseName);
-			_mongoService.InitializeSchemas(new Type[] { typeof(PersonSchema) });
-			_mongoService.UseCamelCase();
-			_mongoService.Connect();
+			_mongoService = MongoHelper.InitializeMongo();
 		}
 
 		[Test]
@@ -89,6 +83,53 @@ namespace MongoClient.Tests
 			//
 			// Assert
 			Assert.IsNull(foundPerson);
+		}
+
+		[Test]
+		public async Task CreateUserWithSameEmailAsync_ThrowException()
+		{
+			//
+			// NOTE: I have set email as unique index for the mongo schema.
+			// The test should throw exception - cannot create same email twice
+			//
+
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<User>();
+			var user = new User
+			{
+				Email = "nautiblaze@jogimali.com",
+				FirstName = "passblaze",
+				LastName = "tail",
+				Active = true
+			};
+
+			var user2 = new User
+			{
+				Email = "nautiblaze@jogimali.com",
+				FirstName = "harry",
+				LastName = "potter",
+				Active = true
+			}; // create another user with the same email
+
+			//
+			// Act
+
+			// create the first user (new)
+			await schema.CreateAsync(user);
+
+			// create another user but with same email
+			AsyncTestDelegate action = () => schema.CreateAsync(user2);
+			Assert.That(action, Throws.TypeOf<MongoWriteException>());
+
+			//
+			// Assert
+			//Assert.Throws()
+			//var assertPerson = schema.Find(user.Id);
+
+			//Assert.NotNull(user);
+			//Assert.AreEqual("BatSync", assertPerson.FirstName);
+			//Assert.AreEqual("ManSync", assertPerson.LastName);
 		}
 	}
 }

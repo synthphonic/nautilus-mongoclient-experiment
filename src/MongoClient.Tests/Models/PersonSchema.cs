@@ -19,8 +19,7 @@ namespace MongoClient.Tests.Models
 			{
 				Console.WriteLine("PersonSchema OnCreateIndexes called");
 
-				var indexModel = IndexHelper.CreateIndex<Person>("firstName");
-				await Collection.Indexes.CreateOneAsync(indexModel);
+				await CreateIndexAsync(nameof(Person.FirstName));
 
 				//
 				// NOTE: this is how to get the index list for a particular collection
