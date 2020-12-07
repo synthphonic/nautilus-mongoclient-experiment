@@ -79,6 +79,51 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			return await found.FirstOrDefaultAsync();
 		}
 
+		#region [Protected] Create Index methods
+		protected async Task CreateIndexAsync(string fieldName, bool isUnique = false)
+		{
+			var options = new CreateIndexOptions() { Unique = isUnique };
+			var field = new StringFieldDefinition<TModel>(fieldName);
+			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+
+			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+
+			await _collection.Indexes.CreateOneAsync(indexModel);
+		}
+
+		protected async Task CreateIndexAsync(string fieldName, CreateIndexOptions options)
+		{
+			var field = new StringFieldDefinition<TModel>(fieldName);
+			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+
+			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+
+			await _collection.Indexes.CreateOneAsync(indexModel);
+		}
+
+		protected void CreateIndex(string fieldName, bool isUnique = false)
+		{
+			var options = new CreateIndexOptions() { Unique = isUnique };
+			var field = new StringFieldDefinition<TModel>(fieldName);
+			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+
+			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+
+			_collection.Indexes.CreateOne(indexModel);
+		}
+
+		protected void CreateIndex(string fieldName, CreateIndexOptions options)
+		{
+			var field = new StringFieldDefinition<TModel>(fieldName);
+			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+
+			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+
+			_collection.Indexes.CreateOne(indexModel);
+		}
+		#endregion
+
+		#region Properties
 		/// <summary>
 		/// For advance collection funcionalities, we use this property instead for now.
 		/// </summary>
@@ -89,5 +134,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 				return _collection;
 			}
 		}
+		#endregion
+
 	}
 }
