@@ -26,36 +26,68 @@ namespace MongoClient.Tests
 		[Test]
 		public async Task UpsertPersonAsync_Success()
 		{
+			//
+			// Arrange
 			var schema = _mongoService.GetSchema<Person>();
-			var newPerson = new Person { FirstName = "Tony", LastName = "Stark", Active = true };
+			var newPerson = new Person { FirstName = "TonyAsync", LastName = "StarkAsync", Active = true };
 
 			await schema.CreateAsync(newPerson);
+			var newPersonId = newPerson.Id;
 
 			var foundPerson = await schema.FindAsync(newPerson.Id);
 
-			foundPerson.FirstName = "Toni";
+			foundPerson.FirstName = "ToniAsync";
+			foundPerson.LastName = "StorkeAsync";
 			foundPerson.Active = false;
 
+			//
+			// Act
 			await schema.UpsertAsync(x => x.Id == foundPerson.Id, foundPerson);
+
+			//
+			// Assert
+			var assertPerson = await schema.FindAsync(foundPerson.Id);
+			Assert.NotNull(assertPerson);
+			Assert.True(newPersonId == assertPerson.Id);
+			Assert.AreEqual("ToniAsync", assertPerson.FirstName);
+			Assert.AreEqual("StorkeAsync", assertPerson.LastName);
+			Assert.AreEqual(false, assertPerson.Active);
 		}
 
 		[Test]
 		public async Task CreatePersonAsync_Success()
 		{
-			var personSchema = _mongoService.GetSchema<Person>();
-			var p = new Person { FirstName = "Bat", LastName = "Man", Active = true };
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "BatAsync", LastName = "ManAsync", Active = true };
 
-			await personSchema.CreateAsync(p);
+			//
+			// Act
+			await schema.CreateAsync(p);
 
-			Assert.NotNull(p.Id);
+			//
+			// Assert
+			var assertPerson = await schema.FindAsync(p.Id);
+
+			Assert.NotNull(p);
+			Assert.AreEqual("BatAsync", assertPerson.FirstName);
+			Assert.AreEqual("ManAsync", assertPerson.LastName);
 		}
 
 		[Test]
 		public async Task FindPersonAsync_NotFound_Null()
 		{
+			//
+			// Arrange
 			var personSchema = _mongoService.GetSchema<Person>();
+
+			//
+			// Act
 			var foundPerson = await personSchema.FindAsync(MongoHelper.NotFoundId);
 
+			//
+			// Assert
 			Assert.IsNull(foundPerson);
 		}
 	}

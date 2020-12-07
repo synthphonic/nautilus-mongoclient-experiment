@@ -25,36 +25,68 @@ namespace MongoClient.Tests
 		[Test]
 		public void UpsertPerson_Success()
 		{
+			//
+			// Arrange
 			var schema = _mongoService.GetSchema<Person>();
-			var newPerson = new Person { FirstName = "Tony", LastName = "Stark", Active = true };
+			var newPerson = new Person { FirstName = "TonySync", LastName = "StarkSync", Active = true };
 
 			schema.Create(newPerson);
+			var newPersonId = newPerson.Id;
 
 			var foundPerson = schema.Find(newPerson.Id);
 
-			foundPerson.FirstName = "Toni";
+			foundPerson.FirstName = "ToniSync";
+			foundPerson.LastName = "StorkeSync";
 			foundPerson.Active = false;
 
+			//
+			// Act
 			schema.Upsert(x => x.Id == foundPerson.Id, foundPerson);
+
+			//
+			// Assert
+			var assertPerson =  schema.Find(foundPerson.Id);
+			Assert.NotNull(assertPerson);
+			Assert.True(newPersonId == assertPerson.Id);
+			Assert.AreEqual("ToniSync", assertPerson.FirstName);
+			Assert.AreEqual("StorkeSync", assertPerson.LastName);
+			Assert.AreEqual(false, assertPerson.Active);
 		}
 
 		[Test]
 		public void CreatePerson_Success()
 		{
-			var personSchema = _mongoService.GetSchema<Person>();
-			var p = new Person { FirstName = "Bat", LastName = "Man", Active = true };
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "BatSync", LastName = "ManSync", Active = true };
 
-			personSchema.Create(p);
+			//
+			// Act
+			schema.Create(p);
 
-			Assert.NotNull(p.Id);
+			//
+			// Assert
+			var assertPerson = schema.Find(p.Id);
+
+			Assert.NotNull(p);
+			Assert.AreEqual("BatSync", assertPerson.FirstName);
+			Assert.AreEqual("ManSync", assertPerson.LastName);
 		}
 
 		[Test]
 		public void FindPerson_NotFound_Null()
 		{
+			//
+			// Arrange
 			var personSchema = _mongoService.GetSchema<Person>();
+
+			//
+			// Act
 			var foundPerson = personSchema.Find(MongoHelper.NotFoundId);
 
+			//
+			// Assert
 			Assert.IsNull(foundPerson);
 		}
 	}
