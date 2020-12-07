@@ -13,23 +13,23 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Extensions
 {
 	public static class ObjectDumpExtension
     {
-        public static string PrintObject2(this object value)
-        {
-            if (value == null)
-                return null;
+        //public static string PrintObject2(this object value)
+        //{
+        //    if (value == null)
+        //        return null;
 
-            var propertiesInfo = value.GetType().GetProperties();
+        //    var propertiesInfo = value.GetType().GetProperties();
 
-            var sb = new StringBuilder();
+        //    var sb = new StringBuilder();
 
-            foreach (var info in propertiesInfo)
-            {
-                var objValue = info.GetValue(value, null) ?? "(null)";
-                sb.AppendLine(info.Name + ": " + objValue.ToString());
-            }
+        //    foreach (var info in propertiesInfo)
+        //    {
+        //        var objValue = info.GetValue(value, null) ?? "(null)";
+        //        sb.AppendLine(info.Name + ": " + objValue.ToString());
+        //    }
 
-            return sb.ToString();
-        }
+        //    return sb.ToString();
+        //}
 
         public static void PrintObject(this object value)
         {

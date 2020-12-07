@@ -21,24 +21,64 @@ namespace MongoService.RunnerConsole
             service.Connect();
 
             var personSchema = service.GetSchema<Person>();
-            var p = new Person { FirstName = "ShahZaa", LastName = "shafie", Active = true };
-            
+
+            #region Sync calls
+            Console.WriteLine("=== SYNC CALLS");
+			var personId = CreatePerson(new Person { FirstName = "ShahZaa", LastName = "shafie", Active = true }, personSchema);
+
+            Console.WriteLine("FindPerson");
+            var foundPerson = FindPerson(personId, personSchema);
+            foundPerson.PrintObject();
+            Console.WriteLine("===\n");
+            #endregion
+
+            #region Async calls
+            Console.WriteLine("=== ASYNC CALLS");
+            var personId2 = await CreatePersonAsync(new Person { FirstName = "Joe", LastName = "Jambul", Active = true }, personSchema);
+
+            Console.WriteLine("FindPersonAsync");
+            foundPerson = await FindPersonAsync(personId2, personSchema);
+            foundPerson.PrintObject();
+            Console.WriteLine("===\n");
+            #endregion
+        }
+
+        private static async Task<Person> FindPersonAsync(ObjectId objId, Nautilus.Experiment.DataProvider.Mongo.Schema.MongoBaseSchema<Person> personSchema)
+        {
+            var resultRecord = await personSchema.FindAsync(objId);
+            return resultRecord;
+        }
+
+        private static Person FindPerson(ObjectId objId, Nautilus.Experiment.DataProvider.Mongo.Schema.MongoBaseSchema<Person> personSchema)
+		{
+            var resultRecord = personSchema.Find(objId);
+            return resultRecord;
+        }
+
+        private static ObjectId CreatePerson(Person p, Nautilus.Experiment.DataProvider.Mongo.Schema.MongoBaseSchema<Person> personSchema)
+		{
             p.PrintObject();
             Console.WriteLine("Inserting record...");
 
-			personSchema.InsertRecord(p);
-			Console.WriteLine("Inserting record done...");
+            personSchema.InsertRecord(p);
+            Console.WriteLine("Inserting record done...");
+            Console.WriteLine();
             p.PrintObject();
 
-            var resultRecord = personSchema.Find(new ObjectId("5fccb39b8a4aa9e6fd4c24b1"));
-            Console.WriteLine($"returningRecord2 null? (should be null) : {resultRecord == null}");
+            return p.Id;
+        }
 
-            var resultRecordAsync = await personSchema.FindAsync(new ObjectId("5fccb39b8a4aa9e6fd4c24b2"));
-            Console.WriteLine($"returningRecord2 null? (not null) : {resultRecordAsync == null}");
+        private static async Task<ObjectId> CreatePersonAsync(Person p, Nautilus.Experiment.DataProvider.Mongo.Schema.MongoBaseSchema<Person> personSchema)
+        {
+            p.PrintObject();
+            Console.WriteLine("Inserting record...");
 
-            //var returningRecord = personSchema.Find(p.Id);
-            //Console.WriteLine("\nreturningRecord");
-            //returningRecord.PrintObject();
+            await personSchema.InsertRecordAsync(p);
+            Console.WriteLine("Inserting record done...");
+            Console.WriteLine();
+            p.PrintObject();
+
+            return p.Id;
         }
     }
 }
