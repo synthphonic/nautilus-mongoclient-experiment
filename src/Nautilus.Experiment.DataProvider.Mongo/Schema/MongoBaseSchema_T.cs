@@ -5,6 +5,8 @@
  * 
  */
 
+using System;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Bson;
@@ -12,45 +14,66 @@ using MongoDB.Driver;
 
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 {
-	public class MongoBaseSchema<T> : MongoBaseSchema where T : class, new()
+	public class MongoBaseSchema<TModel> : MongoBaseSchema where TModel : class, new()
 	{
 		private IMongoDatabase _database;
-		private IMongoCollection<T> _collection;
-		
+		private IMongoCollection<TModel> _collection;
+
 		protected MongoBaseSchema(IMongoDatabase database)
 		{
 			_database = database;
 
-			var t = new T();
+			var t = new TModel();
 
 			TableNameFullCSharp = t.GetType().FullName;
 			TableNameCSharp = t.GetType().Name;
 			TableNameMongo = t.GetType().Name.ToLower();
 
-			_collection = _database.GetCollection<T>(TableNameMongo);
+			_collection = _database.GetCollection<TModel>(TableNameMongo);
 		}
 
-		public void InsertRecord(T record)
+		public void Create(TModel model)
 		{
-			_collection.InsertOne(record);
+			_collection.InsertOne(model);
 		}
 
-		public async Task InsertRecordAsync(T record, InsertOneOptions options = null, CancellationToken token = default)
+		public async Task CreateAsync(TModel model)
+		{
+			await _collection.InsertOneAsync(model);
+		}
+
+		public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
+		{
+			_collection.ReplaceOne(filter, model, new ReplaceOptions()
+			{
+				IsUpsert = true
+			});
+		}
+
+		public async Task UpsertAsync(Expression<Func<TModel, bool>> filter, TModel model)
+		{
+			await _collection.ReplaceOneAsync(filter, model, new ReplaceOptions()
+			{
+				IsUpsert = true
+			});
+		}
+
+		public async Task InsertRecordAsync(TModel record, InsertOneOptions options = null, CancellationToken token = default)
 		{
 			await _collection.InsertOneAsync(record, options, token);
 		}
 
-		public T Find(ObjectId id)
+		public TModel Find(ObjectId id)
 		{
-			var filter = Builders<T>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq("_id", id);
 			var found = _collection.Find(filter).FirstOrDefault();
 
 			return found;
 		}
 
-		public async Task<T> FindAsync(ObjectId id)
+		public async Task<TModel> FindAsync(ObjectId id)
 		{
-			var filter = Builders<T>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq("_id", id);
 			var found = await _collection.FindAsync(filter);
 
 			return await found.FirstOrDefaultAsync();
@@ -59,7 +82,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		/// <summary>
 		/// For advance collection funcionalities, we use this property instead for now.
 		/// </summary>
-		public IMongoCollection<T> Collection
+		public IMongoCollection<TModel> Collection
 		{
 			get
 			{
