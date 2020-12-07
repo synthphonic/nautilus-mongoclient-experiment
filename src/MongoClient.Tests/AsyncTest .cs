@@ -18,6 +18,27 @@ namespace MongoClient.Tests
 		}
 
 		[Test]
+		public async Task CreatePersonAsync_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "BatAsync", LastName = "ManAsync", Active = true };
+
+			//
+			// Act
+			await schema.CreateAsync(p);
+
+			//
+			// Assert
+			var assertPerson = await schema.FindAsync(p.Id);
+
+			Assert.NotNull(p);
+			Assert.AreEqual("BatAsync", assertPerson.FirstName);
+			Assert.AreEqual("ManAsync", assertPerson.LastName);
+		}
+
+		[Test]
 		public async Task UpsertPersonAsync_Success()
 		{
 			//
@@ -49,27 +70,6 @@ namespace MongoClient.Tests
 		}
 
 		[Test]
-		public async Task CreatePersonAsync_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<Person>();
-			var p = new Person { FirstName = "BatAsync", LastName = "ManAsync", Active = true };
-
-			//
-			// Act
-			await schema.CreateAsync(p);
-
-			//
-			// Assert
-			var assertPerson = await schema.FindAsync(p.Id);
-
-			Assert.NotNull(p);
-			Assert.AreEqual("BatAsync", assertPerson.FirstName);
-			Assert.AreEqual("ManAsync", assertPerson.LastName);
-		}
-
-		[Test]
 		public async Task FindPersonAsync_NotFound_Null()
 		{
 			//
@@ -83,6 +83,33 @@ namespace MongoClient.Tests
 			//
 			// Assert
 			Assert.IsNull(foundPerson);
+		}
+
+		[Test]
+		public async Task CreateUserAsync_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<User>();
+			var user = new User
+			{
+				Email = "smiggle@gmali.com",
+				FirstName = "Smiggle",
+				LastName = "Golum",
+				Active = true
+			};
+
+			//
+			// Act
+			await schema.CreateAsync(user);
+
+			//
+			// Assert
+			var assertPerson = schema.Find(user.Id);
+
+			Assert.NotNull(user);
+			Assert.AreEqual("Smiggle", assertPerson.FirstName);
+			Assert.AreEqual("Golum", assertPerson.LastName);
 		}
 
 		[Test]
