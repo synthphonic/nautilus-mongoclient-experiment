@@ -24,12 +24,28 @@ namespace MongoClient.Tests
 		}
 
 		[Test]
+		public async Task UpsertPersonAsync_Success()
+		{
+			var schema = _mongoService.GetSchema<Person>();
+			var newPerson = new Person { FirstName = "Tony", LastName = "Stark", Active = true };
+
+			await schema.CreateAsync(newPerson);
+
+			var foundPerson = await schema.FindAsync(newPerson.Id);
+
+			foundPerson.FirstName = "Toni";
+			foundPerson.Active = false;
+
+			await schema.UpsertAsync(x => x.Id == foundPerson.Id, foundPerson);
+		}
+
+		[Test]
 		public async Task CreatePersonAsync_Success()
 		{
 			var personSchema = _mongoService.GetSchema<Person>();
 			var p = new Person { FirstName = "Bat", LastName = "Man", Active = true };
 
-			await MongoHelper.CreatePersonAsync(p, personSchema);
+			await personSchema.CreateAsync(p);
 
 			Assert.NotNull(p.Id);
 		}
@@ -38,7 +54,7 @@ namespace MongoClient.Tests
 		public async Task FindPersonAsync_NotFound_Null()
 		{
 			var personSchema = _mongoService.GetSchema<Person>();
-			var foundPerson = await MongoHelper.FindPersonAsync(MongoHelper.NotFoundId, personSchema);
+			var foundPerson = await personSchema.FindAsync(MongoHelper.NotFoundId);
 
 			Assert.IsNull(foundPerson);
 		}

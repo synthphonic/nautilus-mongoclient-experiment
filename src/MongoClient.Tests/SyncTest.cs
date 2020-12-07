@@ -23,12 +23,28 @@ namespace MongoClient.Tests
 		}
 
 		[Test]
+		public void UpsertPerson_Success()
+		{
+			var schema = _mongoService.GetSchema<Person>();
+			var newPerson = new Person { FirstName = "Tony", LastName = "Stark", Active = true };
+
+			schema.Create(newPerson);
+
+			var foundPerson = schema.Find(newPerson.Id);
+
+			foundPerson.FirstName = "Toni";
+			foundPerson.Active = false;
+
+			schema.Upsert(x => x.Id == foundPerson.Id, foundPerson);
+		}
+
+		[Test]
 		public void CreatePerson_Success()
 		{
 			var personSchema = _mongoService.GetSchema<Person>();
 			var p = new Person { FirstName = "Bat", LastName = "Man", Active = true };
 
-			MongoHelper.CreatePerson(p, personSchema);
+			personSchema.Create(p);
 
 			Assert.NotNull(p.Id);
 		}
@@ -37,7 +53,7 @@ namespace MongoClient.Tests
 		public void FindPerson_NotFound_Null()
 		{
 			var personSchema = _mongoService.GetSchema<Person>();
-			var foundPerson = MongoHelper.FindPerson(MongoHelper.NotFoundId, personSchema);
+			var foundPerson = personSchema.Find(MongoHelper.NotFoundId);
 
 			Assert.IsNull(foundPerson);
 		}
