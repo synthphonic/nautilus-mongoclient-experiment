@@ -17,6 +17,12 @@ namespace MongoClient.Tests
 			_mongoService = MongoHelper.InitializeMongo();
 		}
 
+		[OneTimeTearDown]
+		public async Task TearDownOneTime()
+		{
+			await _mongoService.DropDatabaseAsync(MongoHelper.DatabaseName);
+		}
+
 		[Test]
 		public async Task CreatePersonAsync_Success()
 		{
@@ -125,15 +131,15 @@ namespace MongoClient.Tests
 			var schema = _mongoService.GetSchema<User>();
 			var user = new User
 			{
-				Email = "nautiblaze@jogimali.com",
-				FirstName = "passblaze",
+				Email = "tailwind@jogimali.com",
+				FirstName = "heads",
 				LastName = "tail",
 				Active = true
 			};
 
 			var user2 = new User
 			{
-				Email = "nautiblaze@jogimali.com",
+				Email = "tailwind@jogimali.com",
 				FirstName = "harry",
 				LastName = "potter",
 				Active = true
@@ -141,22 +147,40 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-
 			// create the first user (new)
 			await schema.CreateAsync(user);
 
 			// create another user but with same email
-			AsyncTestDelegate action = () => schema.CreateAsync(user2);
-			Assert.That(action, Throws.TypeOf<MongoWriteException>());
+			var exceptionThrown = Assert.ThrowsAsync<MongoWriteException>(() => schema.CreateAsync(user2));
 
 			//
 			// Assert
-			//Assert.Throws()
-			//var assertPerson = schema.Find(user.Id);
+			Assert.AreEqual(exceptionThrown.GetType(), typeof(MongoWriteException));
+		}
 
-			//Assert.NotNull(user);
-			//Assert.AreEqual("BatSync", assertPerson.FirstName);
-			//Assert.AreEqual("ManSync", assertPerson.LastName);
+		[Test]
+		public async Task DeleteUserAsync_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<User>();
+			var user = new User
+			{
+				Email = "jembalang@gmali.com",
+				FirstName = "jembs",
+				LastName = "alang",
+				Active = true
+			};
+			await schema.CreateAsync(user);
+
+			//
+			// Act
+			await schema.DeleteAsync(user.Id);
+
+			//
+			// Assert
+			var assertPerson = await schema.FindAsync(user.Id);
+			Assert.Null(assertPerson);
 		}
 	}
 }

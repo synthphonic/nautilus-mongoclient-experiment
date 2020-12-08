@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
 using MongoDB.Driver;
@@ -14,6 +16,12 @@ namespace MongoClient.Tests
 		public void Setup()
 		{
 			_mongoService = MongoHelper.InitializeMongo();
+		}
+
+		[OneTimeTearDown]
+		public async Task TearDownOneTime()
+		{
+			await _mongoService.DropDatabaseAsync(MongoHelper.DatabaseName);
 		}
 
 		[Test]
@@ -140,21 +148,40 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-
 			// create the first user (new)
 			schema.Create(user); 
 
 			// create another user but with same email
 			var exceptionThrown = Assert.Throws<MongoWriteException>(()=>schema.Create(user2));
-			 
+
 			//
 			// Assert
-			//Assert.Throws()
-			//var assertPerson = schema.Find(user.Id);
+			Assert.AreEqual(exceptionThrown.GetType(), typeof(MongoWriteException));
+		}
 
-			//Assert.NotNull(user);
-			//Assert.AreEqual("BatSync", assertPerson.FirstName);
-			//Assert.AreEqual("ManSync", assertPerson.LastName);
+		[Test]
+		public void DeleteUser_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<User>();
+			var user = new User
+			{
+				Email = "jembalang@gmali.com",
+				FirstName = "jembs",
+				LastName = "alang",
+				Active = true
+			};
+			schema.Create(user);
+
+			//
+			// Act
+			schema.Delete(user.Id);
+
+			//
+			// Assert
+			var assertPerson = schema.Find(user.Id);
+			Assert.Null(assertPerson);
 		}
 	}
 }
