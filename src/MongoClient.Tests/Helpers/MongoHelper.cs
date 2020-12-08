@@ -8,7 +8,7 @@ namespace MongoClient.Tests.Helpers
 	internal static class MongoHelper
 	{
 		const string ConnectionString = "mongodb://localhost:27017";
-		public const string DatabaseName = "passKeepr";
+		public const string DatabaseName = "test_db";
 
 		public static ObjectId NotFoundId = new ObjectId("2fcd299f9e1d7d949562d108");
 
