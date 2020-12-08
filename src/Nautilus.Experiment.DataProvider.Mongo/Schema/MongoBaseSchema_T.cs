@@ -79,6 +79,18 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			return await found.FirstOrDefaultAsync();
 		}
 
+		public DeleteResult Delete(ObjectId id)
+		{
+			var filter = Builders<TModel>.Filter.Eq("_id", id);
+			return _collection.DeleteOne(filter);
+		}
+
+		public async Task<DeleteResult> DeleteAsync(ObjectId id)
+		{
+			var filter = Builders<TModel>.Filter.Eq("_id", id);
+			return await _collection.DeleteOneAsync(filter);
+		}
+
 		#region [Protected] Create Index methods
 		protected async Task CreateIndexAsync(string fieldName, bool isUnique = false)
 		{
@@ -135,6 +147,5 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			}
 		}
 		#endregion
-
 	}
 }
