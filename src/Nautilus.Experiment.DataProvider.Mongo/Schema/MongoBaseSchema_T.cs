@@ -19,7 +19,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		private IMongoDatabase _database;
 		private IMongoCollection<TModel> _collection;
 
-		protected MongoBaseSchema(IMongoDatabase database)
+		public MongoBaseSchema(IMongoDatabase database)
 		{
 			_database = database;
 
