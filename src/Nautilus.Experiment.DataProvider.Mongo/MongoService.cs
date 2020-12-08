@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
@@ -16,7 +18,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         private readonly string _connectionString;
         private readonly string _databaseName;
 
-        private MongoClient _mongClient;
+        private MongoClient _mongoClient;
         private IMongoDatabase _database;
         private IList<MongoBaseSchema> _list;
         private Type[] _schemaTypes;
@@ -35,10 +37,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         
         public void Connect()
         {
-            if (_mongClient == null)
+            if (_mongoClient == null)
             {
-                _mongClient = new MongoClient(_connectionString);
-                _database = _mongClient.GetDatabase(_databaseName);
+                _mongoClient = new MongoClient(_connectionString);
+                _database = _mongoClient.GetDatabase(_databaseName);
 
                 InitializeSchemas();
             }
@@ -47,6 +49,16 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         public void InitializeSchemas(Type[] schemaTypes)
         {
             _schemaTypes = schemaTypes;
+        }
+
+        public void DropDatabase(string databaseName)
+		{
+            _mongoClient.DropDatabase(databaseName);
+		}
+
+        public async Task DropDatabaseAsync(string databaseName, CancellationToken token = default)
+        {
+            await _mongoClient.DropDatabaseAsync(databaseName, token);
         }
 
         private void InitializeSchemas()
