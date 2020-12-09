@@ -93,6 +93,46 @@ namespace MongoClient.Tests
 		}
 
 		[Test]
+		public void FindPersonWithFilterParam_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "Wonder", LastName = "Woman", Active = true };
+			schema.Create(p);
+
+			//
+			// Act
+			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Wonder") && p.LastName.Equals("Woman"));
+			var foundPerson = schema.Find(filterDefinition);
+
+			//
+			// Assert
+			Assert.NotNull(foundPerson);
+			Assert.AreEqual("Wonder", foundPerson.FirstName);
+			Assert.AreEqual("Woman", foundPerson.LastName);
+		}
+
+		[Test]
+		public void FindPersonWithFilterParam_NotFound()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "Spider", LastName = "Man", Active = true };
+			schema.Create(p);
+
+			//
+			// Act
+			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Spider") && p.LastName.Equals("Woman"));
+			var foundPerson = schema.Find(filterDefinition);
+
+			//
+			// Assert
+			Assert.Null(foundPerson);
+		}
+
+		[Test]
 		public void CreateUser_Success()
 		{
 			//

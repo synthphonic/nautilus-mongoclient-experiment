@@ -92,6 +92,46 @@ namespace MongoClient.Tests
 		}
 
 		[Test]
+		public async Task FindPersonAsyncWithFilterParam_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "Super", LastName = "Man", Active = true };
+			await schema.CreateAsync(p);
+
+			//
+			// Act
+			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Super") && p.LastName.Equals("Man"));
+			var foundPerson = await schema.FindAsync(filterDefinition);
+
+			//
+			// Assert
+			Assert.NotNull(foundPerson);
+			Assert.AreEqual("Super", foundPerson.FirstName);
+			Assert.AreEqual("Man", foundPerson.LastName);
+		}
+
+		[Test]
+		public async Task FindPersonAsyncWithFilterParam_NotFound()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Person>();
+			var p = new Person { FirstName = "Dead", LastName = "Pool", Active = true };
+			await schema.CreateAsync(p);
+
+			//
+			// Act
+			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Dead") && p.LastName.Equals("Pooling"));
+			var foundPerson = await schema.FindAsync(filterDefinition);
+
+			//
+			// Assert
+			Assert.Null(foundPerson);
+		}
+
+		[Test]
 		public async Task CreateUserAsync_Success()
 		{
 			//

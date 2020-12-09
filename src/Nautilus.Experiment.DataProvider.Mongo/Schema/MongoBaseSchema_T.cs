@@ -71,10 +71,24 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			return found;
 		}
 
+		public TModel Find(FilterDefinition<TModel> filterDefinition)
+		{
+			var found = _collection.Find(filterDefinition);
+
+			return found.FirstOrDefault();
+		}
+
 		public async Task<TModel> FindAsync(ObjectId id)
 		{
 			var filter = Builders<TModel>.Filter.Eq("_id", id);
 			var found = await _collection.FindAsync(filter);
+
+			return await found.FirstOrDefaultAsync();
+		}
+
+		public async Task<TModel> FindAsync(FilterDefinition<TModel> filterDefinition)
+		{
+			var found = await _collection.FindAsync(filterDefinition);
 
 			return await found.FirstOrDefaultAsync();
 		}
