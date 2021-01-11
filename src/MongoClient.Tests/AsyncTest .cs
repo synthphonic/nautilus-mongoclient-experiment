@@ -34,7 +34,7 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-			await schema.CreateAsync(p);
+			await schema.InsertAsync(p);
 
 			//
 			// Assert
@@ -53,7 +53,7 @@ namespace MongoClient.Tests
 			var schema = _mongoService.GetSchema<Person>();
 			var newPerson = new Person { FirstName = "TonyAsync", LastName = "StarkAsync", Active = true };
 
-			await schema.CreateAsync(newPerson);
+			await schema.InsertAsync(newPerson);
 			var newPersonId = newPerson.Id;
 
 			var foundPerson = await schema.FindAsync(newPerson.Id);
@@ -99,7 +99,7 @@ namespace MongoClient.Tests
 			// Arrange
 			var schema = _mongoService.GetSchema<Person>();
 			var p = new Person { FirstName = "Super", LastName = "Man", Active = true };
-			await schema.CreateAsync(p);
+			await schema.InsertAsync(p);
 
 			//
 			// Act
@@ -120,7 +120,7 @@ namespace MongoClient.Tests
 			// Arrange
 			var schema = _mongoService.GetSchema<Person>();
 			var p = new Person { FirstName = "Dead", LastName = "Pool", Active = true };
-			await schema.CreateAsync(p);
+			await schema.InsertAsync(p);
 
 			//
 			// Act
@@ -148,7 +148,7 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-			await schema.CreateAsync(user);
+			await schema.InsertAsync(user);
 
 			//
 			// Assert
@@ -189,10 +189,10 @@ namespace MongoClient.Tests
 			//
 			// Act
 			// create the first user (new)
-			await schema.CreateAsync(user);
+			await schema.InsertAsync(user);
 
 			// create another user but with same email
-			var exceptionThrown = Assert.ThrowsAsync<MongoWriteException>(() => schema.CreateAsync(user2));
+			var exceptionThrown = Assert.ThrowsAsync<MongoWriteException>(() => schema.InsertAsync(user2));
 
 			//
 			// Assert
@@ -212,7 +212,7 @@ namespace MongoClient.Tests
 				LastName = "alang",
 				Active = true
 			};
-			await schema.CreateAsync(user);
+			await schema.InsertAsync(user);
 
 			//
 			// Act
@@ -232,19 +232,19 @@ namespace MongoClient.Tests
 			var schema = _mongoService.GetSchema<Category>();
 
 			var cat = CategoryFactoryHelper.CreateObject("cat1", "shawn");
-			schema.CreateAsync(cat);
+			schema.InsertAsync(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat2", "totot");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat3", "totot");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat4", "shawn");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat5", "shawn");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			//
 			// Act

@@ -35,7 +35,7 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-			schema.Create(p);
+			schema.Insert(p);
 
 			//
 			// Assert
@@ -54,7 +54,7 @@ namespace MongoClient.Tests
 			var schema = _mongoService.GetSchema<Person>();
 			var newPerson = new Person { FirstName = "TonySync", LastName = "StarkSync", Active = true };
 
-			schema.Create(newPerson);
+			schema.Insert(newPerson);
 			var newPersonId = newPerson.Id;
 
 			var foundPerson = schema.Find(newPerson.Id);
@@ -100,7 +100,7 @@ namespace MongoClient.Tests
 			// Arrange
 			var schema = _mongoService.GetSchema<Person>();
 			var p = new Person { FirstName = "Wonder", LastName = "Woman", Active = true };
-			schema.Create(p);
+			schema.Insert(p);
 
 			//
 			// Act
@@ -121,7 +121,7 @@ namespace MongoClient.Tests
 			// Arrange
 			var schema = _mongoService.GetSchema<Person>();
 			var p = new Person { FirstName = "Spider", LastName = "Man", Active = true };
-			schema.Create(p);
+			schema.Insert(p);
 
 			//
 			// Act
@@ -149,7 +149,7 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-			schema.Create(user);
+			schema.Insert(user);
 
 			//
 			// Assert
@@ -190,10 +190,10 @@ namespace MongoClient.Tests
 			//
 			// Act
 			// create the first user (new)
-			schema.Create(user);
+			schema.Insert(user);
 
 			// create another user but with same email
-			var exceptionThrown = Assert.Throws<MongoWriteException>(() => schema.Create(user2));
+			var exceptionThrown = Assert.Throws<MongoWriteException>(() => schema.Insert(user2));
 
 			//
 			// Assert
@@ -213,7 +213,7 @@ namespace MongoClient.Tests
 				LastName = "alang",
 				Active = true
 			};
-			schema.Create(user);
+			schema.Insert(user);
 
 			//
 			// Act
@@ -233,19 +233,19 @@ namespace MongoClient.Tests
 			var schema = _mongoService.GetSchema<Category>();
 
 			var cat = CategoryFactoryHelper.CreateObject("cat1", "shawn");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat2", "totot");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat3", "totot");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat4", "shawn");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat5", "shawn");
-			schema.Create(cat);
+			schema.Insert(cat);
 
 			//
 			// Act

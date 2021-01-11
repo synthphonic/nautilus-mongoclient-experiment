@@ -33,12 +33,12 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			_collection = _database.GetCollection<TModel>(TableNameMongo);
 		}
 
-		public void Create(TModel model)
+		public void Insert(TModel model)
 		{
 			_collection.InsertOne(model);
 		}
 
-		public async Task CreateAsync(TModel model, InsertOneOptions options = null, CancellationToken token = default)
+		public async Task InsertAsync(TModel model, InsertOneOptions options = null, CancellationToken token = default)
 		{
 			await _collection.InsertOneAsync(model, options, token);
 		}
