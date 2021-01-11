@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,9 +38,9 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			_collection.InsertOne(model);
 		}
 
-		public async Task CreateAsync(TModel model)
+		public async Task CreateAsync(TModel model, InsertOneOptions options = null, CancellationToken token = default)
 		{
-			await _collection.InsertOneAsync(model);
+			await _collection.InsertOneAsync(model, options, token);
 		}
 
 		public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
@@ -50,12 +51,12 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			});
 		}
 
-		public async Task UpsertAsync(Expression<Func<TModel, bool>> filter, TModel model)
+		public async Task UpsertAsync(Expression<Func<TModel, bool>> filter, TModel model, CancellationToken token = default)
 		{
 			await _collection.ReplaceOneAsync(filter, model, new ReplaceOptions()
 			{
 				IsUpsert = true
-			});
+			}, token);
 		}
 
 		public async Task InsertRecordAsync(TModel record, InsertOneOptions options = null, CancellationToken token = default)
@@ -76,6 +77,20 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			var found = _collection.Find(filterDefinition);
 
 			return found.FirstOrDefault();
+		}
+
+		public IEnumerable<TModel> FindMany(FilterDefinition<TModel> filterDefinition)
+		{
+			var found = _collection.Find(filterDefinition).ToList();
+
+			return found;
+		}
+
+		public async Task<IEnumerable<TModel>> FindManyAsync(FilterDefinition<TModel> filterDefinition, CancellationToken token = default)
+		{
+			var found = await _collection.Find(filterDefinition).ToListAsync(token);
+
+			return found;
 		}
 
 		public async Task<TModel> FindAsync(ObjectId id)
