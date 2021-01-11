@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
@@ -15,13 +16,13 @@ namespace MongoClient.Tests
 		[OneTimeSetUp]
 		public void Setup()
 		{
-			_mongoService = MongoHelper.InitializeMongo();
+			_mongoService = MongoInitializer.Initialize();
 		}
 
 		[OneTimeTearDown]
 		public async Task TearDownOneTime()
 		{
-			await _mongoService.DropDatabaseAsync(MongoHelper.DatabaseName);
+			await _mongoService.DropDatabaseAsync(MongoInitializer.DatabaseName);
 		}
 
 		[Test]
@@ -68,7 +69,7 @@ namespace MongoClient.Tests
 
 			//
 			// Assert
-			var assertPerson =  schema.Find(foundPerson.Id);
+			var assertPerson = schema.Find(foundPerson.Id);
 			Assert.NotNull(assertPerson);
 			Assert.True(newPersonId == assertPerson.Id);
 			Assert.AreEqual("ToniSync", assertPerson.FirstName);
@@ -85,7 +86,7 @@ namespace MongoClient.Tests
 
 			//
 			// Act
-			var foundPerson = personSchema.Find(MongoHelper.NotFoundId);
+			var foundPerson = personSchema.Find(MongoInitializer.NotFoundId);
 
 			//
 			// Assert
@@ -189,10 +190,10 @@ namespace MongoClient.Tests
 			//
 			// Act
 			// create the first user (new)
-			schema.Create(user); 
+			schema.Create(user);
 
 			// create another user but with same email
-			var exceptionThrown = Assert.Throws<MongoWriteException>(()=>schema.Create(user2));
+			var exceptionThrown = Assert.Throws<MongoWriteException>(() => schema.Create(user2));
 
 			//
 			// Assert
@@ -222,6 +223,45 @@ namespace MongoClient.Tests
 			// Assert
 			var assertPerson = schema.Find(user.Id);
 			Assert.Null(assertPerson);
+		}
+
+		[Test]
+		public void GetManyCategories_Success()
+		{
+			//
+			// Arrange
+			var schema = _mongoService.GetSchema<Category>();
+
+			var cat = CategoryFactoryHelper.CreateObject("cat1", "shawn");
+			schema.Create(cat);
+
+			cat = CategoryFactoryHelper.CreateObject("cat2", "totot");
+			schema.Create(cat);
+
+			cat = CategoryFactoryHelper.CreateObject("cat3", "totot");
+			schema.Create(cat);
+
+			cat = CategoryFactoryHelper.CreateObject("cat4", "shawn");
+			schema.Create(cat);
+
+			cat = CategoryFactoryHelper.CreateObject("cat5", "shawn");
+			schema.Create(cat);
+
+			//
+			// Act
+			var filterDefinition = Builders<Category>.Filter.Where(p => p.UserId.Equals("shawn"));
+			var searchShawnResults = schema.FindMany(filterDefinition);
+
+			filterDefinition = Builders<Category>.Filter.Where(p => p.UserId.Equals("totot"));
+			var searchTototResults = schema.FindMany(filterDefinition);
+
+			//
+			// Assert			
+			Assert.NotNull(searchShawnResults);
+			Assert.AreEqual(3, searchShawnResults.Count());
+
+			Assert.NotNull(searchShawnResults);
+			Assert.AreEqual(2, searchTototResults.Count());
 		}
 	}
 }
