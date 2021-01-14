@@ -7,11 +7,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Nautilus.Experiment.DataProvider.Mongo.Attributes;
 
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 {
@@ -29,6 +31,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			TableNameFullCSharp = t.GetType().FullName;
 			TableNameCSharp = t.GetType().Name;
 			TableNameMongo = t.GetType().Name.ToLower();
+
+			var foundAttributes = t.GetType().GetCustomAttributes(typeof(CollectionName), false);
+			if (foundAttributes != null && foundAttributes.Count() == 1)
+			{
+				var attrib = foundAttributes[0] as CollectionName;
+				TableNameMongo = attrib.Name;
+			}
 
 			_collection = _database.GetCollection<TModel>(TableNameMongo);
 		}

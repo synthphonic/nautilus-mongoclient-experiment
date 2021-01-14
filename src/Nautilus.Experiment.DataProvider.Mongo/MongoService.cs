@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
+using Nautilus.Experiment.DataProvider.Mongo.Attributes;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
 namespace Nautilus.Experiment.DataProvider.Mongo
@@ -29,12 +30,15 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             _databaseName = databaseName;
         }
 
+        /// <summary>
+		/// Use camelCasing on document elements
+		/// </summary>
         public void UseCamelCase()
 		{
             var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
             ConventionRegistry.Register("camelCase", conventionPack, t => true);
 		}
-        
+    
         public void Connect()
         {
             if (_mongoClient == null)
@@ -65,10 +69,9 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 		{
             _list = new List<MongoBaseSchema>();
 
-
-            foreach (var item in _schemaTypes)
+            foreach (var schemaType in _schemaTypes)
             {
-                var instance = (MongoBaseSchema)Activator.CreateInstance(item, _database);
+                var instance = (MongoBaseSchema)Activator.CreateInstance(schemaType, new object[] { _database });
                 instance.CreateIndexes();
 
                 _list.Add(instance);
@@ -81,9 +84,17 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
             var instance = new TModel();
             var schemaName = instance.GetType().Name.ToLower();
+
+            var foundAttributes = instance.GetType().GetCustomAttributes(typeof(CollectionName), false);
+            if (foundAttributes != null && foundAttributes.Count() == 1)
+            {
+                var attrib = foundAttributes[0] as CollectionName;
+                schemaName = attrib.Name;
+            }
+
             var found = _list.FirstOrDefault(x => x.TableNameMongo.Equals(schemaName));
 
             return found as MongoBaseSchema<TModel>;
         }
-    }
+	}
 }
