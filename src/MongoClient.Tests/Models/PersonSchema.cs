@@ -13,7 +13,7 @@ namespace MongoClient.Tests.Models
 {
 	public class PersonSchema : MongoBaseSchema<Person>
 	{
-		public PersonSchema(IMongoDatabase database): base(database)
+		public PersonSchema(IMongoDatabase database) : base(database)
 		{
 			OnCreateIndexes += async (o, e) =>
 			{

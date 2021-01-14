@@ -1,10 +1,8 @@
 using MongoDB.Bson;
-using Nautilus.Experiment.DataProvider.Mongo.Attributes;
 
 namespace MongoClient.Tests.Models
 {
-	[CollectionName("Users")]
-	public class User
+	public class NoAttributeModel
 	{
 		public ObjectId Id { get; set; }
 		public string Email { get; set; }

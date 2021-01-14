@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MongoClient.Tests.Models;
 using MongoDB.Bson;
 using Nautilus.Experiment.DataProvider.Mongo;
@@ -24,6 +26,21 @@ namespace MongoClient.Tests.Helpers
 
 			mongoService.UseCamelCase();
 			mongoService.Connect();
+
+			return mongoService;
+		}
+
+		/// <summary>
+		/// Creates a mongo service but not connecting to the db just yet
+		/// </summary>
+		/// <param name="schemaTypes"></param>
+		/// <param name="databasename"></param>
+		/// <param name="connectionString"></param>
+		/// <returns></returns>
+		internal static MongoService CreateMongoService(IEnumerable<Type> schemaTypes, string databasename = "test_db", string connectionString = "mongodb://localhost:27017")
+		{
+			var mongoService = new MongoService(connectionString, databasename);
+			mongoService.InitializeSchemas(schemaTypes.ToArray());
 
 			return mongoService;
 		}

@@ -1,7 +1,9 @@
 ﻿using MongoDB.Bson;
+using Nautilus.Experiment.DataProvider.Mongo.Attributes;
 
 namespace MongoClient.Tests.Models
 {
+	[CollectionName("Persons")]
 	public class Person
 	{
 		public ObjectId Id { get; set; }
