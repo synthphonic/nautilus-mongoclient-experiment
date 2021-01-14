@@ -59,11 +59,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			}, token);
 		}
 
-		public async Task InsertRecordAsync(TModel record, InsertOneOptions options = null, CancellationToken token = default)
-		{
-			await _collection.InsertOneAsync(record, options, token);
-		}
-
 		public TModel Find(ObjectId id)
 		{
 			var filter = Builders<TModel>.Filter.Eq("_id", id);
