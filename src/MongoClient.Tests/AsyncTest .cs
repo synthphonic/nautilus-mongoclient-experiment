@@ -232,19 +232,19 @@ namespace MongoClient.Tests
 			var schema = _mongoService.GetSchema<Category>();
 
 			var cat = CategoryFactoryHelper.CreateObject("cat1", "shawn");
-			schema.InsertAsync(cat);
+			await schema.InsertAsync(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat2", "totot");
-			schema.Insert(cat);
+			await schema.InsertAsync(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat3", "totot");
-			schema.Insert(cat);
+			await schema.InsertAsync(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat4", "shawn");
-			schema.Insert(cat);
+			await schema.InsertAsync(cat);
 
 			cat = CategoryFactoryHelper.CreateObject("cat5", "shawn");
-			schema.Insert(cat);
+			await schema.InsertAsync(cat);
 
 			//
 			// Act
