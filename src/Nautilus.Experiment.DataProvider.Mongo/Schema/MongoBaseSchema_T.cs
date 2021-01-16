@@ -22,6 +22,12 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		private IMongoDatabase _database;
 		private IMongoCollection<TModel> _collection;
 
+		public MongoBaseSchema()
+		{
+			var t = new TModel();
+			ModelType = t.GetType();
+		}
+
 		public MongoBaseSchema(IMongoDatabase database)
 		{
 			_database = database;
@@ -31,6 +37,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			TableNameFullCSharp = t.GetType().FullName;
 			TableNameCSharp = t.GetType().Name;
 			TableNameMongo = t.GetType().Name.ToLower();
+			ModelType = t.GetType();
 
 			var foundAttributes = t.GetType().GetCustomAttributes(typeof(CollectionName), false);
 			if (foundAttributes != null && foundAttributes.Count() == 1)
@@ -133,7 +140,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
 			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
 
-			await _collection.Indexes.CreateOneAsync(indexModel);
+			try
+			{
+				await _collection.Indexes.CreateOneAsync(indexModel);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 		}
 
 		protected async Task CreateIndexAsync(string fieldName, CreateIndexOptions options)
@@ -169,6 +183,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		#endregion
 
 		#region Properties
+		public TModel Model { get; private set; }
+
 		/// <summary>
 		/// For advance collection funcionalities, we use this property instead for now.
 		/// </summary>
