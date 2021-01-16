@@ -6,6 +6,11 @@ namespace MongoClient.Tests.Models
 {
 	public class NoAttributeModelSchema : MongoBaseSchema<NoAttributeModel>
 	{
+		public NoAttributeModelSchema()
+		{
+
+		}
+
 		public NoAttributeModelSchema(IMongoDatabase database) : base(database)
 		{
 			OnCreateIndexes += async (o, e) =>

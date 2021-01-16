@@ -5,6 +5,11 @@ namespace MongoClient.Tests.Models
 {
 	public class CategorySchema : MongoBaseSchema<Category>
 	{
+		public CategorySchema()
+		{
+
+		}
+
 		public CategorySchema(IMongoDatabase database) : base(database)
 		{
 			OnCreateIndexes += async (o, e) =>

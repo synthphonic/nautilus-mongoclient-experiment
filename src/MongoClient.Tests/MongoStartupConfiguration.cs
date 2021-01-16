@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
 using Nautilus.Experiment.DataProvider.Mongo;
@@ -19,9 +20,10 @@ namespace MongoClient.Tests
 		}
 
 		[TearDown]
-		public void TearDownOneTime()
+		public async Task TearDownOneTime()
 		{
-			_mongoService.DropDatabase(DatabaseName);
+			await _mongoService.DropDatabaseAsync(DatabaseName);
+			await Task.Delay(2000);
 		}
 
 		[Test]
@@ -30,9 +32,9 @@ namespace MongoClient.Tests
 			#region Arrange
 			var schemaTypes = new List<Type>
 				{
+					typeof(UserSchema),
 					typeof(CategorySchema),
 					typeof(PersonSchema),
-					typeof(UserSchema),
 					typeof(CategoryDetailSchema)
 				};
 

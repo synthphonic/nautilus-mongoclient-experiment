@@ -17,7 +17,7 @@ namespace MongoClient.Tests.Helpers
 		internal static MongoService Initialize()
 		{
 			var mongoService = new MongoService(ConnectionString, DatabaseName);
-			mongoService.InitializeSchemas(new Type[]
+			mongoService.RegisterSchemas(new Type[]
 			{
 				typeof(PersonSchema),
 				typeof(UserSchema),
@@ -40,7 +40,7 @@ namespace MongoClient.Tests.Helpers
 		internal static MongoService CreateMongoService(IEnumerable<Type> schemaTypes, string databasename = "test_db", string connectionString = "mongodb://localhost:27017")
 		{
 			var mongoService = new MongoService(connectionString, databasename);
-			mongoService.InitializeSchemas(schemaTypes.ToArray());
+			mongoService.RegisterSchemas(schemaTypes.ToArray());
 
 			return mongoService;
 		}

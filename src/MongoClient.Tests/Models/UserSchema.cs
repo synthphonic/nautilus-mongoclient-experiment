@@ -6,6 +6,11 @@ namespace MongoClient.Tests.Models
 {
 	public class UserSchema : MongoBaseSchema<User>
 	{
+		public UserSchema() : base()
+		{
+
+		}
+
 		public UserSchema(IMongoDatabase database) : base(database)
 		{
 			OnCreateIndexes += async (o, e) =>
