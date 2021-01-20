@@ -1,7 +1,7 @@
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
-namespace MongoClient.Tests.Models
+namespace MongoClient.Tests.Models.Schema
 {
 	public class CategorySchema : MongoBaseSchema<Category>
 	{

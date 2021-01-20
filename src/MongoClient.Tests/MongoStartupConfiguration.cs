@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
+using MongoClient.Tests.Models.Schema;
 using Nautilus.Experiment.DataProvider.Mongo;
 using NUnit.Framework;
 
