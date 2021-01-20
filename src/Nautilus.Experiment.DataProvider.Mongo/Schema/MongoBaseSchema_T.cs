@@ -11,7 +11,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Attributes;
 
@@ -75,9 +74,9 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			}, token);
 		}
 
-		public TModel Find(ObjectId id)
+		public TModel Find<TField>(TField id)
 		{
-			var filter = Builders<TModel>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
 			var found = _collection.Find(filter).FirstOrDefault();
 
 			return found;
@@ -104,9 +103,9 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			return found;
 		}
 
-		public async Task<TModel> FindAsync(ObjectId id)
+		public async Task<TModel> FindAsync<TField>(TField id)
 		{
-			var filter = Builders<TModel>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
 			var found = await _collection.FindAsync(filter);
 
 			return await found.FirstOrDefaultAsync();
@@ -119,15 +118,17 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			return await found.FirstOrDefaultAsync();
 		}
 
-		public DeleteResult Delete(ObjectId id)
+		public DeleteResult Delete<TField>(TField id)
 		{
-			var filter = Builders<TModel>.Filter.Eq("_id", id);
+			//var filter = Builders<TModel>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
 			return _collection.DeleteOne(filter);
 		}
 
-		public async Task<DeleteResult> DeleteAsync(ObjectId id)
+		public async Task<DeleteResult> DeleteAsync<TField>(TField id)
 		{
-			var filter = Builders<TModel>.Filter.Eq("_id", id);
+			//var filter = Builders<TModel>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
 			return await _collection.DeleteOneAsync(filter);
 		}
 

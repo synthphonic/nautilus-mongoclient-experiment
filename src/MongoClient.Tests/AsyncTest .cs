@@ -16,12 +16,14 @@ namespace MongoClient.Tests
 		public void Setup()
 		{
 			_mongoService = MongoInitializer.Initialize();
+			Task.Delay(2000);
 		}
 
 		[OneTimeTearDown]
 		public async Task TearDownOneTime()
 		{
 			await _mongoService.DropDatabaseAsync(MongoInitializer.DatabaseName);
+			await Task.Delay(2000);
 		}
 
 		[Test]
