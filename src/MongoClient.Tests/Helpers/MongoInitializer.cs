@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoClient.Tests.Models;
+using MongoClient.Tests.Models.Schema;
 using MongoDB.Bson;
 using Nautilus.Experiment.DataProvider.Mongo;
 
