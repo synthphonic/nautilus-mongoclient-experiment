@@ -5,12 +5,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Attributes;
+using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
 namespace Nautilus.Experiment.DataProvider.Mongo
@@ -67,9 +67,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 					//}
 				}
 			}
-			catch (Exception)
+			catch (TimeoutException timeoutEx)
 			{
-				throw;
+				throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+			}
+			catch (Exception ex)
+			{
+				throw new NautilusMongoDbException("Mongo throws a general exception", ex);
 			}
 		}
 
@@ -107,13 +111,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 				//	initializedSchemas.Add(instance);
 				//}
 			}
-			catch (TimeoutException)
+			catch (TimeoutException timeoutEx)
 			{
-				throw;
+				throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				throw;
+				throw new NautilusMongoDbException("Mongo throws a general exception", ex);
 			}
 		}
 
@@ -172,13 +176,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 					_initializedSchemas.Add(instance);
 				}
 			}
-			catch (TimeoutException)
+			catch (TimeoutException timeoutEx)
 			{
-				throw;
+				throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				throw;
+				throw new NautilusMongoDbException("Mongo throws a general exception", ex);
 			}
 		}
 

@@ -1,5 +1,6 @@
 using System;
 using MongoDB.Driver;
+using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
 namespace MongoClient.Tests.Models.Schema
@@ -15,9 +16,16 @@ namespace MongoClient.Tests.Models.Schema
 		{
 			OnCreateIndexes += async (o, e) =>
 			{
-				Console.WriteLine("UserSchema OnCreateIndexes called");
-				await CreateIndexAsync(nameof(User.Email), isUnique: true);
-				await CreateIndexAsync(nameof(User.FirstName));
+				try
+				{
+					Console.WriteLine("UserSchema OnCreateIndexes called");
+					await CreateIndexAsync(nameof(User.Email), isUnique: true);
+					await CreateIndexAsync(nameof(User.FirstName));
+				}
+				catch (NautilusMongoDbException)
+				{
+					throw;
+				}
 			};
 		}
 	}

@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Attributes;
+using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 {
@@ -135,19 +136,27 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		#region [Protected] Create Index methods
 		protected async Task CreateIndexAsync(string fieldName, bool isUnique = false)
 		{
-			var options = new CreateIndexOptions() { Unique = isUnique };
-			var field = new StringFieldDefinition<TModel>(fieldName);
-			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
-
-			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
-
 			try
 			{
+				var options = new CreateIndexOptions() { Unique = isUnique };
+				var field = new StringFieldDefinition<TModel>(fieldName);
+				var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+
+				var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+
 				await _collection.Indexes.CreateOneAsync(indexModel);
 			}
-			catch (Exception)
+			catch (MongoConnectionException mongoConnectEx)
 			{
-				throw;
+				throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+			}
+			catch (TimeoutException timeoutEx)
+			{
+				throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+			}
+			catch (Exception ex)
+			{
+				throw new NautilusMongoDbException("Mongo throws a general exception", ex);
 			}
 		}
 
