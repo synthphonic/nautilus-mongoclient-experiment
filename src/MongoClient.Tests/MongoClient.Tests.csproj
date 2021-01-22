@@ -20,4 +20,9 @@
     <Folder Include="Helpers\" />
     <Folder Include="Models\Schema\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Nautilus">
+      <HintPath>..\..\binaries\Nautilus.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
