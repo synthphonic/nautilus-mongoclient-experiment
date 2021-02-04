@@ -17,8 +17,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 {
 	public class MongoService
 	{
-		private readonly string _connectionString;
 		private readonly string _databaseName;
+		private readonly MongoClientSettings _mongoClientSettings;
 
 		private MongoClient _mongoClient;
 		private IMongoDatabase _database;
@@ -26,9 +26,18 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 		private IEnumerable<Type> _registeringSchemaTypes;
 
 		public MongoService(string connectionString, string databaseName)
+			: this (MongoClientSettings.FromConnectionString(connectionString))
 		{
-			_connectionString = connectionString;
+			_mongoClientSettings = MongoClientSettings.FromConnectionString(connectionString);
 			_databaseName = databaseName;
+
+			_initializedSchemas = new List<MongoBaseSchema>();
+		}
+
+		public MongoService(MongoClientSettings mongoClientSettings)
+		{
+			_mongoClientSettings = mongoClientSettings;
+			_databaseName = _mongoClientSettings.Credential.Source;
 
 			_initializedSchemas = new List<MongoBaseSchema>();
 		}
@@ -48,7 +57,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 			{
 				if (_mongoClient == null)
 				{
-					_mongoClient = new MongoClient(_connectionString);
+					_mongoClient = new MongoClient(_mongoClientSettings);
 
 					_database = _mongoClient.GetDatabase(_databaseName);
 
