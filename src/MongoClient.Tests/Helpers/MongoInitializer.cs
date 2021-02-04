@@ -7,7 +7,7 @@ using Nautilus.Experiment.DataProvider.Mongo;
 
 namespace MongoClient.Tests.Helpers
 {
-	internal static class MongoInitializer
+    internal static class MongoInitializer
 	{
 		const string ConnectionString = "mongodb://localhost:27017";
 		public const string DatabaseName = "test_db";
