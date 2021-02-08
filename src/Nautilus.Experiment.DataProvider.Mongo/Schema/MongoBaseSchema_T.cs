@@ -17,7 +17,7 @@ using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 {
-	public class MongoBaseSchema<TModel> : MongoBaseSchema where TModel : class, new()
+    public class MongoBaseSchema<TModel> : MongoBaseSchema where TModel : class, new()
 	{
 		private IMongoDatabase _database;
 		private IMongoCollection<TModel> _collection;
@@ -73,6 +73,11 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 			{
 				IsUpsert = true
 			}, token);
+		}
+
+		public async Task UpdateOneAsync(FilterDefinition<TModel> filter, UpdateDefinition<TModel> update, UpdateOptions options = null, CancellationToken token = default)
+		{
+			await _collection.UpdateOneAsync(filter, update, options, token);
 		}
 
 		public TModel Find<TField>(TField id)
