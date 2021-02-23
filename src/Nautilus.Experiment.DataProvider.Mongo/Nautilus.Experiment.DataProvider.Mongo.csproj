@@ -13,6 +13,7 @@
     <Folder Include="Extensions\" />
     <Folder Include="Attributes\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Nautilus">
