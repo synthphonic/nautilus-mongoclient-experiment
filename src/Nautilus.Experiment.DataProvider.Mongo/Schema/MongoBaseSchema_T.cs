@@ -18,198 +18,411 @@ using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 {
     public class MongoBaseSchema<TModel> : MongoBaseSchema where TModel : class, new()
-	{
-		private IMongoDatabase _database;
-		private IMongoCollection<TModel> _collection;
+    {
+        private IMongoDatabase _database;
+        private IMongoCollection<TModel> _collection;
 
-		public MongoBaseSchema()
-		{
-			var t = new TModel();
-			ModelType = t.GetType();
-		}
+        public MongoBaseSchema()
+        {
+            var t = new TModel();
+            ModelType = t.GetType();
+        }
 
-		public MongoBaseSchema(IMongoDatabase database)
-		{
-			_database = database;
+        public MongoBaseSchema(IMongoDatabase database)
+        {
+            _database = database;
 
-			var t = new TModel();
+            var t = new TModel();
 
-			TableNameFullCSharp = t.GetType().FullName;
-			TableNameCSharp = t.GetType().Name;
-			TableNameMongo = t.GetType().Name.ToLower();
-			ModelType = t.GetType();
+            TableNameFullCSharp = t.GetType().FullName;
+            TableNameCSharp = t.GetType().Name;
+            TableNameMongo = t.GetType().Name.ToLower();
+            ModelType = t.GetType();
 
-			var foundAttributes = t.GetType().GetCustomAttributes(typeof(CollectionName), false);
-			if (foundAttributes != null && foundAttributes.Count() == 1)
-			{
-				var attrib = foundAttributes[0] as CollectionName;
-				TableNameMongo = attrib.Name;
-			}
+            var foundAttributes = t.GetType().GetCustomAttributes(typeof(CollectionName), false);
+            if (foundAttributes != null && foundAttributes.Count() == 1)
+            {
+                var attrib = foundAttributes[0] as CollectionName;
+                TableNameMongo = attrib.Name;
+            }
 
-			_collection = _database.GetCollection<TModel>(TableNameMongo);
-		}
+            _collection = _database.GetCollection<TModel>(TableNameMongo);
+        }
 
-		public void Insert(TModel model)
-		{
-			_collection.InsertOne(model);
-		}
+        public void Insert(TModel model)
+        {
+            try
+            {
+                _collection.InsertOne(model);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task InsertAsync(TModel model, InsertOneOptions options = null, CancellationToken token = default)
-		{
-			await _collection.InsertOneAsync(model, options, token);
-		}
+        public async Task InsertAsync(TModel model, InsertOneOptions options = null, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.InsertOneAsync(model, options, token);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
-		{
-			_collection.ReplaceOne(filter, model, new ReplaceOptions()
-			{
-				IsUpsert = true
-			});
-		}
+        public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
+        {
+            try
+            {
+                _collection.ReplaceOne(filter, model, new ReplaceOptions()
+                {
+                    IsUpsert = true
+                });
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task UpsertAsync(Expression<Func<TModel, bool>> filter, TModel model, CancellationToken token = default)
-		{
-			await _collection.ReplaceOneAsync(filter, model, new ReplaceOptions()
-			{
-				IsUpsert = true
-			}, token);
-		}
+        public async Task UpsertAsync(Expression<Func<TModel, bool>> filter, TModel model, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.ReplaceOneAsync(filter, model, new ReplaceOptions()
+                {
+                    IsUpsert = true
+                }, token);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task UpdateOneAsync(FilterDefinition<TModel> filter, UpdateDefinition<TModel> update, UpdateOptions options = null, CancellationToken token = default)
-		{
-			await _collection.UpdateOneAsync(filter, update, options, token);
-		}
+        public async Task UpdateOneAsync(FilterDefinition<TModel> filter, UpdateDefinition<TModel> update, UpdateOptions options = null, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.UpdateOneAsync(filter, update, options, token);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public TModel Find<TField>(TField id)
-		{
-			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
-			var found = _collection.Find(filter).FirstOrDefault();
+        public TModel Find<TField>(TField id)
+        {
+            try
+            {
+                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
+                var found = _collection.Find(filter).FirstOrDefault();
 
-			return found;
-		}
+                return found;
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public TModel Find(FilterDefinition<TModel> filterDefinition)
-		{
-			var found = _collection.Find(filterDefinition);
+        public TModel Find(FilterDefinition<TModel> filterDefinition)
+        {
+            try
+            {
+                var found = _collection.Find(filterDefinition);
 
-			return found.FirstOrDefault();
-		}
+                return found.FirstOrDefault();
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public IEnumerable<TModel> FindMany(FilterDefinition<TModel> filterDefinition)
-		{
-			var found = _collection.Find(filterDefinition).ToList();
+        public IEnumerable<TModel> FindMany(FilterDefinition<TModel> filterDefinition)
+        {
+            try
+            {
+                var found = _collection.Find(filterDefinition).ToList();
 
-			return found;
-		}
+                return found;
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task<IEnumerable<TModel>> FindManyAsync(FilterDefinition<TModel> filterDefinition, CancellationToken token = default)
-		{
-			var found = await _collection.Find(filterDefinition).ToListAsync(token);
+        public async Task<IEnumerable<TModel>> FindManyAsync(FilterDefinition<TModel> filterDefinition, CancellationToken token = default)
+        {
+            try
+            {
+                var found = await _collection.Find(filterDefinition).ToListAsync(token);
 
-			return found;
-		}
+                return found;
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task<TModel> FindAsync<TField>(TField id)
-		{
-			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
-			var found = await _collection.FindAsync(filter);
+        public async Task<TModel> FindAsync<TField>(TField id)
+        {
+            try
+            {
+                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
+                var found = await _collection.FindAsync(filter);
 
-			return await found.FirstOrDefaultAsync();
-		}
+                return await found.FirstOrDefaultAsync();
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task<TModel> FindAsync(FilterDefinition<TModel> filterDefinition)
-		{
-			var found = await _collection.FindAsync(filterDefinition);
+        public async Task<TModel> FindAsync(FilterDefinition<TModel> filterDefinition)
+        {
+            try
+            {
+                var found = await _collection.FindAsync(filterDefinition);
 
-			return await found.FirstOrDefaultAsync();
-		}
+                return await found.FirstOrDefaultAsync();
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public DeleteResult Delete<TField>(TField id)
-		{
-			//var filter = Builders<TModel>.Filter.Eq("_id", id);
-			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
-			return _collection.DeleteOne(filter);
-		}
+        public DeleteResult Delete<TField>(TField id)
+        {
+            try
+            {
+                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
+                return _collection.DeleteOne(filter);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		public async Task<DeleteResult> DeleteAsync<TField>(TField id)
-		{
-			//var filter = Builders<TModel>.Filter.Eq("_id", id);
-			var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
-			return await _collection.DeleteOneAsync(filter);
-		}
+        public async Task<DeleteResult> DeleteAsync<TField>(TField id)
+        {
+            try
+            {
+                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
+                return await _collection.DeleteOneAsync(filter);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-		#region [Protected] Create Index methods
-		protected async Task CreateIndexAsync(string fieldName, bool isUnique = false)
-		{
-			try
-			{
-				var options = new CreateIndexOptions() { Unique = isUnique };
-				var field = new StringFieldDefinition<TModel>(fieldName);
-				var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+        public async Task<DeleteResult> DeleteManyAsync(FilterDefinition<TModel> filter)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(filter);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-				var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+        #region [Protected] Create Index methods
+        protected async Task CreateIndexAsync(string fieldName, bool isUnique = false)
+        {
+            try
+            {
+                var options = new CreateIndexOptions() { Unique = isUnique };
+                var field = new StringFieldDefinition<TModel>(fieldName);
+                var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
 
-				await _collection.Indexes.CreateOneAsync(indexModel);
-			}
-			catch (MongoConnectionException mongoConnectEx)
-			{
-				throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-			}
-			catch (TimeoutException timeoutEx)
-			{
-				throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-			}
-			catch (Exception ex)
-			{
-				throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-			}
-		}
+                var indexModel = new CreateIndexModel<TModel>(indexDef, options);
 
-		protected async Task CreateIndexAsync(string fieldName, CreateIndexOptions options)
-		{
-			var field = new StringFieldDefinition<TModel>(fieldName);
-			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+                await _collection.Indexes.CreateOneAsync(indexModel);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
-			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+        protected async Task CreateIndexAsync(string fieldName, CreateIndexOptions options)
+        {
+            var field = new StringFieldDefinition<TModel>(fieldName);
+            var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
 
-			await _collection.Indexes.CreateOneAsync(indexModel);
-		}
+            var indexModel = new CreateIndexModel<TModel>(indexDef, options);
 
-		protected void CreateIndex(string fieldName, bool isUnique = false)
-		{
-			var options = new CreateIndexOptions() { Unique = isUnique };
-			var field = new StringFieldDefinition<TModel>(fieldName);
-			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+            await _collection.Indexes.CreateOneAsync(indexModel);
+        }
 
-			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+        protected void CreateIndex(string fieldName, bool isUnique = false)
+        {
+            var options = new CreateIndexOptions() { Unique = isUnique };
+            var field = new StringFieldDefinition<TModel>(fieldName);
+            var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
 
-			_collection.Indexes.CreateOne(indexModel);
-		}
+            var indexModel = new CreateIndexModel<TModel>(indexDef, options);
 
-		protected void CreateIndex(string fieldName, CreateIndexOptions options)
-		{
-			var field = new StringFieldDefinition<TModel>(fieldName);
-			var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+            _collection.Indexes.CreateOne(indexModel);
+        }
 
-			var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+        protected void CreateIndex(string fieldName, CreateIndexOptions options)
+        {
+            var field = new StringFieldDefinition<TModel>(fieldName);
+            var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
 
-			_collection.Indexes.CreateOne(indexModel);
-		}
-		#endregion
+            var indexModel = new CreateIndexModel<TModel>(indexDef, options);
 
-		#region Properties
-		public TModel Model { get; private set; }
+            _collection.Indexes.CreateOne(indexModel);
+        }
+        #endregion
 
-		/// <summary>
-		/// For advance collection funcionalities, we use this property instead for now.
-		/// </summary>
-		public IMongoCollection<TModel> Collection
-		{
-			get
-			{
-				return _collection;
-			}
-		}
-		#endregion
-	}
+        #region Properties
+        public TModel Model { get; private set; }
+
+        /// <summary>
+        /// For advance collection funcionalities, we use this property instead for now.
+        /// </summary>
+        public IMongoCollection<TModel> Collection
+        {
+            get
+            {
+                return _collection;
+            }
+        }
+        #endregion
+    }
 }
