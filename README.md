@@ -6,21 +6,21 @@ This experiment repo using the official [MongoDB C# Driver](https://docs.mongodb
 Install MongoDB on your dev machine. The best way is to use [Docker Desktop](https://www.docker.com/products/docker-desktop). Of course you can opt to install MongoDB directly into your machine. Personally I choose docker. 
 
 Once docker is installed open up your terminal of choice. 
-run the commands below
+Run one of the commands below:
 
     $ sudo docker pull mongo (latest)
 
-OR
+Start a mongo database by getting the specific version
 
     $ sudo docker pull mongo:4.2.2 (specific version)
 
-Start the Docker container with the run command using the mongo image. The /data/db directory in the container is mounted as /mongodata on the host. Additionally, this command changes the name of the container to mongodb:
+Start a mongo database in docker having the data directory persisted /data/db. This container does not expose ports to the outside world
 
-    $ sudo docker run -it -v mongodata:/data/db --name mongodb -d mongo
+    $ docker run --name mongodb -v /data/db mongodb
 
-OR
+Start a mongo database in docker having the data directory persisted /data/db. This container exposes port 27017 so that a 3rd party client can connect to it.
 
-    $ sudo docker run -it -v mongodata:/data/db -p 27017:27017 --name mongodb -d mongo
+    $ docker run --name mongodb -p 27017:27017 -v /data/db mongo
 
 ... to set the port manually.
 
@@ -48,3 +48,6 @@ Stop mongodb
 Start mongodb
 
     $ sudo docker start mongodb
+
+## References
+- https://itnext.io/stop-installing-db-locally-use-docker-for-local-development-for-mongodb-or-postgresql-ff560893f38e
