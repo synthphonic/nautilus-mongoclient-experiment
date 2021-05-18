@@ -37,7 +37,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 		public MongoService(MongoClientSettings mongoClientSettings)
 		{
 			_mongoClientSettings = mongoClientSettings;
-			_databaseName = _mongoClientSettings.Credential.Source;
+			if (_mongoClientSettings.Credential != null)
+			{
+				_databaseName = _mongoClientSettings.Credential.Source;
+			}
 
 			_initializedSchemas = new List<MongoBaseSchema>();
 		}
