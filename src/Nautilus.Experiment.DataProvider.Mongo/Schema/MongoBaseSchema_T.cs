@@ -49,6 +49,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             _collection = _database.GetCollection<TModel>(TableNameMongo);
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         public void Insert(TModel model)
         {
             try
@@ -58,6 +59,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
             }
             catch (TimeoutException timeoutEx)
             {
@@ -79,6 +88,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -89,6 +106,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             }
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
         {
             try
@@ -101,6 +119,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
             }
             catch (TimeoutException timeoutEx)
             {
@@ -125,6 +151,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -145,6 +179,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -155,6 +197,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             }
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         public TModel Find<TField>(TField id)
         {
             try
@@ -168,6 +211,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -178,6 +229,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             }
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         public TModel Find(FilterDefinition<TModel> filterDefinition)
         {
             try
@@ -190,6 +242,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -200,6 +260,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             }
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         public IEnumerable<TModel> FindMany(FilterDefinition<TModel> filterDefinition)
         {
             try
@@ -211,6 +272,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
             }
             catch (TimeoutException timeoutEx)
             {
@@ -233,6 +302,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
             }
             catch (TimeoutException timeoutEx)
             {
@@ -257,6 +334,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -279,6 +364,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -289,6 +382,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             }
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         public DeleteResult Delete<TField>(TField id)
         {
             try
@@ -299,6 +393,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
             }
             catch (TimeoutException timeoutEx)
             {
@@ -321,6 +423,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -340,6 +450,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
             }
             catch (TimeoutException timeoutEx)
             {
@@ -368,6 +486,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
             }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
             catch (TimeoutException timeoutEx)
             {
                 throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
@@ -388,6 +514,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             await _collection.Indexes.CreateOneAsync(indexModel);
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         protected void CreateIndex(string fieldName, bool isUnique = false)
         {
             var options = new CreateIndexOptions() { Unique = isUnique };
@@ -399,6 +526,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             _collection.Indexes.CreateOne(indexModel);
         }
 
+        [Obsolete("Use the asynchronous method instead", true)]
         protected void CreateIndex(string fieldName, CreateIndexOptions options)
         {
             var field = new StringFieldDefinition<TModel>(fieldName);

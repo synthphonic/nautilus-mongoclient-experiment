@@ -1,269 +1,275 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MongoClient.Tests.Helpers;
-using MongoClient.Tests.Models;
-using MongoDB.Driver;
-using Nautilus.Experiment.DataProvider.Mongo;
-using NUnit.Framework;
+//using System.Linq;
+//using System.Threading.Tasks;
+//using MongoClient.Tests.Helpers;
+//using MongoClient.Tests.Models;
+//using MongoDB.Driver;
+//using Nautilus.Experiment.DataProvider.Mongo;
+//using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
+//using NUnit.Framework;
 
-namespace MongoClient.Tests
-{
-	public class SyncTest
-	{
-		private MongoService _mongoService;
+//namespace MongoClient.Tests
+//{
+//    public class SyncTest
+//	{
+//		private MongoService _mongoService;
+//		private const string DatabaseName = "sync-test-db";
 
-		[OneTimeSetUp]
-		public void Setup()
-		{
-			_mongoService = MongoInitializer.Initialize();
-			Task.Delay(2000);
-		}
+//		[OneTimeSetUp]
+//		public async Task Setup()
+//		{
+//			_mongoService = MongoInitializer.Initialize(DatabaseName);
 
-		[OneTimeTearDown]
-		public async Task TearDownOneTime()
-		{
-			await _mongoService.DropDatabaseAsync(MongoInitializer.DatabaseName);
-			await Task.Delay(2000);
-		}
+//			await _mongoService.DropDatabaseAsync(DatabaseName);
+//			await Task.Delay(2000);
 
-		[Test]
-		public void CreatePerson_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<Person>();
-			var p = new Person { FirstName = "BatSync", LastName = "ManSync", Active = true };
+//			_mongoService = MongoInitializer.Initialize(DatabaseName);
+//			await Task.Delay(2000);
+//		}
 
-			//
-			// Act
-			schema.Insert(p);
+//		[OneTimeTearDown]
+//		public async Task TearDownOneTime()
+//		{
+//			await _mongoService.DropDatabaseAsync(MongoInitializer.DatabaseName);
+//			await Task.Delay(2000);
+//		}
 
-			//
-			// Assert
-			var assertPerson = schema.Find(p.Id);
+//		[Test]
+//		public void CreatePerson_Success()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<Person>();
+//			var p = new Person { FirstName = "BatSync", LastName = "ManSync", Active = true };
 
-			Assert.NotNull(p);
-			Assert.AreEqual("BatSync", assertPerson.FirstName);
-			Assert.AreEqual("ManSync", assertPerson.LastName);
-		}
+//			//
+//			// Act
+//			schema.Insert(p);
 
-		[Test]
-		public void UpsertPerson_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<Person>();
-			var newPerson = new Person { FirstName = "TonySync", LastName = "StarkSync", Active = true };
+//			//
+//			// Assert
+//			var assertPerson = schema.Find(p.Id);
 
-			schema.Insert(newPerson);
-			var newPersonId = newPerson.Id;
+//			Assert.NotNull(p);
+//			Assert.AreEqual("BatSync", assertPerson.FirstName);
+//			Assert.AreEqual("ManSync", assertPerson.LastName);
+//		}
 
-			var foundPerson = schema.Find(newPerson.Id);
+//		[Test]
+//		public void UpsertPerson_Success()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<Person>();
+//			var newPerson = new Person { FirstName = "TonySync", LastName = "StarkSync", Active = true };
 
-			foundPerson.FirstName = "ToniSync";
-			foundPerson.LastName = "StorkeSync";
-			foundPerson.Active = false;
+//			schema.Insert(newPerson);
+//			var newPersonId = newPerson.Id;
 
-			//
-			// Act
-			schema.Upsert(x => x.Id == foundPerson.Id, foundPerson);
+//			var foundPerson = schema.Find(newPerson.Id);
 
-			//
-			// Assert
-			var assertPerson = schema.Find(foundPerson.Id);
-			Assert.NotNull(assertPerson);
-			Assert.True(newPersonId == assertPerson.Id);
-			Assert.AreEqual("ToniSync", assertPerson.FirstName);
-			Assert.AreEqual("StorkeSync", assertPerson.LastName);
-			Assert.AreEqual(false, assertPerson.Active);
-		}
+//			foundPerson.FirstName = "ToniSync";
+//			foundPerson.LastName = "StorkeSync";
+//			foundPerson.Active = false;
 
-		[Test]
-		public void FindPerson_NotFound_Null()
-		{
-			//
-			// Arrange
-			var personSchema = _mongoService.GetSchema<Person>();
+//			//
+//			// Act
+//			schema.Upsert(x => x.Id == foundPerson.Id, foundPerson);
 
-			//
-			// Act
-			var foundPerson = personSchema.Find(MongoInitializer.NotFoundId);
+//			//
+//			// Assert
+//			var assertPerson = schema.Find(foundPerson.Id);
+//			Assert.NotNull(assertPerson);
+//			Assert.True(newPersonId == assertPerson.Id);
+//			Assert.AreEqual("ToniSync", assertPerson.FirstName);
+//			Assert.AreEqual("StorkeSync", assertPerson.LastName);
+//			Assert.AreEqual(false, assertPerson.Active);
+//		}
 
-			//
-			// Assert
-			Assert.IsNull(foundPerson);
-		}
+//		[Test]
+//		public void FindPerson_NotFound_Null()
+//		{
+//			//
+//			// Arrange
+//			var personSchema = _mongoService.GetSchema<Person>();
 
-		[Test]
-		public void FindPersonWithFilterParam_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<Person>();
-			var p = new Person { FirstName = "Wonder", LastName = "Woman", Active = true };
-			schema.Insert(p);
+//			//
+//			// Act
+//			var foundPerson = personSchema.Find(MongoInitializer.NotFoundId);
 
-			//
-			// Act
-			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Wonder") && p.LastName.Equals("Woman"));
-			var foundPerson = schema.Find(filterDefinition);
+//			//
+//			// Assert
+//			Assert.IsNull(foundPerson);
+//		}
 
-			//
-			// Assert
-			Assert.NotNull(foundPerson);
-			Assert.AreEqual("Wonder", foundPerson.FirstName);
-			Assert.AreEqual("Woman", foundPerson.LastName);
-		}
+//		[Test]
+//		public void FindPersonWithFilterParam_Success()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<Person>();
+//			var p = new Person { FirstName = "Wonder", LastName = "Woman", Active = true };
+//			schema.Insert(p);
 
-		[Test]
-		public void FindPersonWithFilterParam_NotFound()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<Person>();
-			var p = new Person { FirstName = "Spider", LastName = "Man", Active = true };
-			schema.Insert(p);
+//			//
+//			// Act
+//			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Wonder") && p.LastName.Equals("Woman"));
+//			var foundPerson = schema.Find(filterDefinition);
 
-			//
-			// Act
-			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Spider") && p.LastName.Equals("Woman"));
-			var foundPerson = schema.Find(filterDefinition);
+//			//
+//			// Assert
+//			Assert.NotNull(foundPerson);
+//			Assert.AreEqual("Wonder", foundPerson.FirstName);
+//			Assert.AreEqual("Woman", foundPerson.LastName);
+//		}
 
-			//
-			// Assert
-			Assert.Null(foundPerson);
-		}
+//		[Test]
+//		public void FindPersonWithFilterParam_NotFound()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<Person>();
+//			var p = new Person { FirstName = "Spider", LastName = "Man", Active = true };
+//			schema.Insert(p);
 
-		[Test]
-		public void CreateUser_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<User>();
-			var user = new User
-			{
-				Email = "helloworld@gmali.com",
-				FirstName = "BatSync",
-				LastName = "ManSync",
-				Active = true
-			};
+//			//
+//			// Act
+//			var filterDefinition = Builders<Person>.Filter.Where(p => p.FirstName.Equals("Spider") && p.LastName.Equals("Woman"));
+//			var foundPerson = schema.Find(filterDefinition);
 
-			//
-			// Act
-			schema.Insert(user);
+//			//
+//			// Assert
+//			Assert.Null(foundPerson);
+//		}
 
-			//
-			// Assert
-			var assertPerson = schema.Find(user.Id);
+//		[Test]
+//		public void CreateUser_Success()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<User>();
+//			var user = new User
+//			{
+//				Email = "helloworld@gmali.com",
+//				FirstName = "BatSync",
+//				LastName = "ManSync",
+//				Active = true
+//			};
 
-			Assert.NotNull(user);
-			Assert.AreEqual("BatSync", assertPerson.FirstName);
-			Assert.AreEqual("ManSync", assertPerson.LastName);
-		}
+//			//
+//			// Act
+//			schema.Insert(user);
 
-		[Test]
-		public void CreateUserWithSameEmail_ThrowException()
-		{
-			//
-			// NOTE: I have set email as unique index for the mongo schema.
-			// The test should throw exception - cannot create same email twice
-			//
+//			//
+//			// Assert
+//			var assertPerson = schema.Find(user.Id);
 
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<User>();
-			var user = new User
-			{
-				Email = "tailwind@jogimali.com",
-				FirstName = "heads",
-				LastName = "tail",
-				Active = true
-			};
+//			Assert.NotNull(user);
+//			Assert.AreEqual("BatSync", assertPerson.FirstName);
+//			Assert.AreEqual("ManSync", assertPerson.LastName);
+//		}
 
-			var user2 = new User
-			{
-				Email = "tailwind@jogimali.com",
-				FirstName = "harry",
-				LastName = "potter",
-				Active = true
-			}; // create another user with the same email
+//		[Test]
+//		public void CreateUserWithSameEmail_ThrowException()
+//		{
+//			//
+//			// NOTE: I have set email as unique index for the mongo schema.
+//			// The test should throw exception - cannot create same email twice
+//			//
 
-			//
-			// Act
-			// create the first user (new)
-			schema.Insert(user);
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<User>();
+//			var user = new User
+//			{
+//				Email = "tailwind@jogimali.com",
+//				FirstName = "heads",
+//				LastName = "tail",
+//				Active = true
+//			};
 
-			// create another user but with same email
-			var exceptionThrown = Assert.Throws<MongoWriteException>(() => schema.Insert(user2));
+//			var user2 = new User
+//			{
+//				Email = "tailwind@jogimali.com",
+//				FirstName = "harry",
+//				LastName = "potter",
+//				Active = true
+//			}; // create another user with the same email
 
-			//
-			// Assert
-			Assert.AreEqual(exceptionThrown.GetType(), typeof(MongoWriteException));
-		}
+//			//
+//			// Act
+//			// create the first user (new)
+//			schema.Insert(user);
 
-		[Test]
-		public void DeleteUser_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<User>();
-			var user = new User
-			{
-				Email = "jembalang@gmali.com",
-				FirstName = "jembs",
-				LastName = "alang",
-				Active = true
-			};
-			schema.Insert(user);
+//			// create another user but with same email
+//			Assert.Throws<NautilusMongoDbException>(() => schema.Insert(user2));
 
-			//
-			// Act
-			schema.Delete(user.Id);
+//			//
+//			// Assert
+//			//Assert.AreEqual(exceptionThrown.GetType(), typeof(NautilusMongoDbException));
+//		}
 
-			//
-			// Assert
-			var assertPerson = schema.Find(user.Id);
-			Assert.Null(assertPerson);
-		}
+//		[Test]
+//		public void DeleteUser_Success()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<User>();
+//			var user = new User
+//			{
+//				Email = "jembalang@gmali.com",
+//				FirstName = "jembs",
+//				LastName = "alang",
+//				Active = true
+//			};
+//			schema.Insert(user);
 
-		[Test]
-		public void GetManyCategories_Success()
-		{
-			//
-			// Arrange
-			var schema = _mongoService.GetSchema<Category>();
+//			//
+//			// Act
+//			schema.Delete(user.Id);
 
-			var cat = CategoryFactoryHelper.CreateObject("cat1", "shawn");
-			schema.Insert(cat);
+//			//
+//			// Assert
+//			var assertPerson = schema.Find(user.Id);
+//			Assert.Null(assertPerson);
+//		}
 
-			cat = CategoryFactoryHelper.CreateObject("cat2", "totot");
-			schema.Insert(cat);
+//		[Test]
+//		public void GetManyCategories_Success()
+//		{
+//			//
+//			// Arrange
+//			var schema = _mongoService.GetSchema<Category>();
 
-			cat = CategoryFactoryHelper.CreateObject("cat3", "totot");
-			schema.Insert(cat);
+//			var cat = CategoryFactoryHelper.CreateObject("cat1", "shawn");
+//			schema.Insert(cat);
 
-			cat = CategoryFactoryHelper.CreateObject("cat4", "shawn");
-			schema.Insert(cat);
+//			cat = CategoryFactoryHelper.CreateObject("cat2", "totot");
+//			schema.Insert(cat);
 
-			cat = CategoryFactoryHelper.CreateObject("cat5", "shawn");
-			schema.Insert(cat);
+//			cat = CategoryFactoryHelper.CreateObject("cat3", "totot");
+//			schema.Insert(cat);
 
-			//
-			// Act
-			var filterDefinition = Builders<Category>.Filter.Where(p => p.UserId.Equals("shawn"));
-			var searchShawnResults = schema.FindMany(filterDefinition);
+//			cat = CategoryFactoryHelper.CreateObject("cat4", "shawn");
+//			schema.Insert(cat);
 
-			filterDefinition = Builders<Category>.Filter.Where(p => p.UserId.Equals("totot"));
-			var searchTototResults = schema.FindMany(filterDefinition);
+//			cat = CategoryFactoryHelper.CreateObject("cat5", "shawn");
+//			schema.Insert(cat);
 
-			//
-			// Assert			
-			Assert.NotNull(searchShawnResults);
-			Assert.AreEqual(3, searchShawnResults.Count());
+//			//
+//			// Act
+//			var filterDefinition = Builders<Category>.Filter.Where(p => p.UserId.Equals("shawn"));
+//			var searchShawnResults = schema.FindMany(filterDefinition);
 
-			Assert.NotNull(searchShawnResults);
-			Assert.AreEqual(2, searchTototResults.Count());
-		}
-	}
-}
+//			filterDefinition = Builders<Category>.Filter.Where(p => p.UserId.Equals("totot"));
+//			var searchTototResults = schema.FindMany(filterDefinition);
+
+//			//
+//			// Assert			
+//			Assert.NotNull(searchShawnResults);
+//			Assert.AreEqual(3, searchShawnResults.Count());
+
+//			Assert.NotNull(searchShawnResults);
+//			Assert.AreEqual(2, searchTototResults.Count());
+//		}
+//	}
+//}

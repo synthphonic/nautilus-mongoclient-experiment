@@ -22,6 +22,11 @@ namespace MongoClient.Tests.Models.Schema
 					await CreateIndexAsync(nameof(User.Email), isUnique: true);
 					await CreateIndexAsync(nameof(User.FirstName));
 				}
+				catch (MongoCommandException mongoCmdEx)
+                {
+					throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+
+				}
 				catch (NautilusMongoDbException)
 				{
 					throw;

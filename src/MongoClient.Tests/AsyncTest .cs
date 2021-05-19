@@ -4,18 +4,20 @@ using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo;
+using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 using NUnit.Framework;
 
 namespace MongoClient.Tests
 {
 	public class AsyncTest
 	{
+		private const string DatabaseName = "async-test-db";
 		private MongoService _mongoService;
 
 		[OneTimeSetUp]
 		public void Setup()
 		{
-			_mongoService = MongoInitializer.Initialize();
+			_mongoService = MongoInitializer.Initialize(DatabaseName);
 			Task.Delay(2000);
 		}
 
@@ -154,7 +156,7 @@ namespace MongoClient.Tests
 
 			//
 			// Assert
-			var assertPerson = schema.Find(user.Id);
+			var assertPerson = await schema.FindAsync(user.Id);
 
 			Assert.NotNull(user);
 			Assert.AreEqual("Smiggle", assertPerson.FirstName);
@@ -194,11 +196,11 @@ namespace MongoClient.Tests
 			await schema.InsertAsync(user);
 
 			// create another user but with same email
-			var exceptionThrown = Assert.ThrowsAsync<MongoWriteException>(() => schema.InsertAsync(user2));
+			var exceptionThrown = Assert.ThrowsAsync<NautilusMongoDbException>(() => schema.InsertAsync(user2));
 
 			//
 			// Assert
-			Assert.AreEqual(exceptionThrown.GetType(), typeof(MongoWriteException));
+			Assert.AreEqual(exceptionThrown.GetType(), typeof(NautilusMongoDbException));
 		}
 
 		[Test]
