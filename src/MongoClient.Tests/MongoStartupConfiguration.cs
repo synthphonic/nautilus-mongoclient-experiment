@@ -1,31 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MongoClient.Tests.Base;
 using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
 using MongoClient.Tests.Models.Schema;
-using Nautilus.Experiment.DataProvider.Mongo;
 using NUnit.Framework;
 
 namespace MongoClient.Tests
 {
-    public class MongoStartupConfiguration
+    public class MongoStartupConfiguration : BaseTest
     {
-        private const string DatabaseName = "configuration_test_db";
-        private MongoService _mongoService;
-
         [OneTimeSetUp]
-        public void Setup()
+        public async Task Setup()
         {
-            _mongoService = MongoInitializer.Initialize(DatabaseName);
-            Task.Delay(2000);
+            DatabaseName= "configuration_test_db";
+
+            await OneTimeSetup();
+            await OneTimeTearDown();
         }
 
         [OneTimeTearDown]
         public async Task TearDownOneTime()
         {
-            await _mongoService.DropDatabaseAsync(DatabaseName);
-            await Task.Delay(2000);
+            await OneTimeTearDown();
         }
 
         [Test]
