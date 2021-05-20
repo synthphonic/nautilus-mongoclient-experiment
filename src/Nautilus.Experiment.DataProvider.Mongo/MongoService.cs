@@ -15,7 +15,7 @@ using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
 namespace Nautilus.Experiment.DataProvider.Mongo
 {
-	public class MongoService
+    public class MongoService
 	{
 		private readonly string _databaseName;
 		private readonly MongoClientSettings _mongoClientSettings;

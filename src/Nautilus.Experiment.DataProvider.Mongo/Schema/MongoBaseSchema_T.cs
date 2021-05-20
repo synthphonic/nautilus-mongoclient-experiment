@@ -56,6 +56,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             {
                 _collection.InsertOne(model);
             }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
@@ -83,6 +87,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             try
             {
                 await _collection.InsertOneAsync(model, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
             }
             catch (MongoConnectionException mongoConnectEx)
             {
@@ -147,6 +155,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
                     IsUpsert = true
                 }, token);
             }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
@@ -174,6 +186,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             try
             {
                 await _collection.UpdateOneAsync(filter, update, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
             }
             catch (MongoConnectionException mongoConnectEx)
             {
@@ -269,6 +285,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
                 return found;
             }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
@@ -298,6 +318,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
                 var found = await _collection.Find(filterDefinition).ToListAsync(token);
 
                 return found;
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
             }
             catch (MongoConnectionException mongoConnectEx)
             {
@@ -330,6 +354,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
                 return await found.FirstOrDefaultAsync();
             }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
@@ -359,6 +387,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
                 var found = await _collection.FindAsync(filterDefinition);
 
                 return await found.FirstOrDefaultAsync();
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
             }
             catch (MongoConnectionException mongoConnectEx)
             {
@@ -419,6 +451,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
                 var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
                 return await _collection.DeleteOneAsync(filter);
             }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
@@ -446,6 +482,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             try
             {
                 return await _collection.DeleteManyAsync(filter);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
             }
             catch (MongoConnectionException mongoConnectEx)
             {
@@ -482,6 +522,10 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
                 await _collection.Indexes.CreateOneAsync(indexModel);
             }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
             catch (MongoConnectionException mongoConnectEx)
             {
                 throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
@@ -506,12 +550,39 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
         protected async Task CreateIndexAsync(string fieldName, CreateIndexOptions options)
         {
-            var field = new StringFieldDefinition<TModel>(fieldName);
-            var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
+            try
+            {
+                var field = new StringFieldDefinition<TModel>(fieldName);
+                var indexDef = new IndexKeysDefinitionBuilder<TModel>().Ascending(field);
 
-            var indexModel = new CreateIndexModel<TModel>(indexDef, options);
+                var indexModel = new CreateIndexModel<TModel>(indexDef, options);
 
-            await _collection.Indexes.CreateOneAsync(indexModel);
+                await _collection.Indexes.CreateOneAsync(indexModel);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
         }
 
         [Obsolete("Use the asynchronous method instead", true)]
