@@ -16,14 +16,14 @@ namespace MongoClient.Tests
         {
             DatabaseName = "async-test-db";
 
-            await OneTimeSetup();
-            await OneTimeTearDown();
+            await SetupMongoDb();
+            await TearDown();
         }
 
         [OneTimeTearDown]
         public async Task TearDownOneTime()
         {
-            await OneTimeTearDown();
+            await TearDown();
         }
 
         [Test]
