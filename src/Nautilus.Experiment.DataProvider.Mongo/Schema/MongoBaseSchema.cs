@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 {
 	public class MongoBaseSchema : IMongoModel
 	{
-		public event EventHandler OnCreateIndexes;
+		//public event EventHandler OnCreateIndexes;
 		protected MongoBaseSchema()
 		{
 		}
@@ -18,8 +19,16 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 		{
 			Console.WriteLine("MongoBaseSchema.CreateIndexes");
 
-			OnCreateIndexes?.Invoke(null, EventArgs.Empty);
+			CreateModelIndexesAsync();
+			//OnCreateIndexes?.Invoke(null, EventArgs.Empty);
 		}
+
+		protected virtual Task CreateModelIndexesAsync()
+        {
+			ConsoleOutput.Write(GetType(), message: $"[{ModelType.Name}]");
+
+			return Task.CompletedTask;
+        }
 	}
 
 	public interface IMongoModel

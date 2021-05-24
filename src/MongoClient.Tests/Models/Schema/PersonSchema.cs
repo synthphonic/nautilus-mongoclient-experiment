@@ -6,6 +6,7 @@
  */
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
@@ -20,16 +21,27 @@ namespace MongoClient.Tests.Models.Schema
 
 		public PersonSchema(IMongoDatabase database) : base(database)
 		{
-			OnCreateIndexes += async (o, e) =>
-			{
-				Console.WriteLine("PersonSchema OnCreateIndexes called");
+			//OnCreateIndexes += async (o, e) =>
+			//{
+			//	Console.WriteLine("PersonSchema OnCreateIndexes called");
 
-				await CreateIndexAsync(nameof(Person.FirstName));
+			//	await CreateIndexAsync(nameof(Person.FirstName));
 
-				//
-				// NOTE: this is how to get the index list for a particular collection
-				var a = Collection.Indexes.List().ToList();
-			};
+			//	//
+			//	// NOTE: this is how to get the index list for a particular collection
+			//	var a = Collection.Indexes.List().ToList();
+			//};
 		}
-	}
+
+        protected override async Task CreateModelIndexesAsync()
+        {
+			Console.WriteLine("PersonSchema OnCreateIndexes called");
+
+			await CreateIndexAsync(nameof(Person.FirstName));
+
+			//
+			// NOTE: this is how to get the index list for a particular collection
+			//var a = Collection.Indexes.List().ToList();
+		}
+    }
 }

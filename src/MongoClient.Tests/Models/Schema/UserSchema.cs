@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 using Nautilus.Experiment.DataProvider.Mongo.Schema;
@@ -14,24 +15,42 @@ namespace MongoClient.Tests.Models.Schema
 
 		public UserSchema(IMongoDatabase database) : base(database)
 		{
-			OnCreateIndexes += async (o, e) =>
-			{
-				try
-				{
-					Console.WriteLine("UserSchema OnCreateIndexes called");
-					await CreateIndexAsync(nameof(User.Email), isUnique: true);
-					await CreateIndexAsync(nameof(User.FirstName));
-				}
-				catch (MongoCommandException mongoCmdEx)
-                {
-					throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+			//OnCreateIndexes += async (o, e) =>
+			//{
+			//	try
+			//	{
+			//		Console.WriteLine("UserSchema OnCreateIndexes called");
+			//		await CreateIndexAsync(nameof(User.Email), isUnique: true);
+			//		await CreateIndexAsync(nameof(User.FirstName));
+			//	}
+			//	catch (MongoCommandException mongoCmdEx)
+   //             {
+			//		throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
 
-				}
-				catch (NautilusMongoDbException)
-				{
-					throw;
-				}
-			};
+			//	}
+			//	catch (NautilusMongoDbException)
+			//	{
+			//		throw;
+			//	}
+			//};
 		}
-	}
+
+        protected override async Task CreateModelIndexesAsync()
+        {
+			try
+			{
+				Console.WriteLine("UserSchema OnCreateIndexes called");
+				await CreateIndexAsync(nameof(User.Email), isUnique: true);
+				await CreateIndexAsync(nameof(User.FirstName));
+			}
+			catch (MongoCommandException mongoCmdEx)
+			{
+				throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+			}
+			catch (NautilusMongoDbException)
+			{
+				throw;
+			}
+		}
+    }
 }
