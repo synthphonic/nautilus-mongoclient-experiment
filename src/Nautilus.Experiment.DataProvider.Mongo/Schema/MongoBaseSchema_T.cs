@@ -49,39 +49,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             _collection = _database.GetCollection<TModel>(TableNameMongo);
         }
 
-        [Obsolete("Use the asynchronous method instead", true)]
-        public void Insert(TModel model)
-        {
-            try
-            {
-                _collection.InsertOne(model);
-            }
-            catch (MongoAuthenticationException mongoAuthEx)
-            {
-                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
-            }
-            catch (MongoConnectionException mongoConnectEx)
-            {
-                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-            }
-            catch (MongoWriteException mongoWriteEx)
-            {
-                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
-            }
-            catch (MongoCommandException mongoCmdEx)
-            {
-                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
         public async Task InsertAsync(TModel model, InsertOneOptions options = null, CancellationToken token = default)
         {
             try
@@ -91,38 +58,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             catch (MongoAuthenticationException mongoAuthEx)
             {
                 throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
-            }
-            catch (MongoConnectionException mongoConnectEx)
-            {
-                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-            }
-            catch (MongoWriteException mongoWriteEx)
-            {
-                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
-            }
-            catch (MongoCommandException mongoCmdEx)
-            {
-                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
-        [Obsolete("Use the asynchronous method instead", true)]
-        public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
-        {
-            try
-            {
-                _collection.ReplaceOne(filter, model, new ReplaceOptions()
-                {
-                    IsUpsert = true
-                });
             }
             catch (MongoConnectionException mongoConnectEx)
             {
@@ -186,104 +121,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             try
             {
                 await _collection.UpdateOneAsync(filter, update, options, token);
-            }
-            catch (MongoAuthenticationException mongoAuthEx)
-            {
-                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
-            }
-            catch (MongoConnectionException mongoConnectEx)
-            {
-                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-            }
-            catch (MongoWriteException mongoWriteEx)
-            {
-                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
-            }
-            catch (MongoCommandException mongoCmdEx)
-            {
-                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
-        [Obsolete("Use the asynchronous method instead", true)]
-        public TModel Find<TField>(TField id)
-        {
-            try
-            {
-                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
-                var found = _collection.Find(filter).FirstOrDefault();
-
-                return found;
-            }
-            catch (MongoConnectionException mongoConnectEx)
-            {
-                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-            }
-            catch (MongoWriteException mongoWriteEx)
-            {
-                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
-            }
-            catch (MongoCommandException mongoCmdEx)
-            {
-                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
-        [Obsolete("Use the asynchronous method instead", true)]
-        public TModel Find(FilterDefinition<TModel> filterDefinition)
-        {
-            try
-            {
-                var found = _collection.Find(filterDefinition);
-
-                return found.FirstOrDefault();
-            }
-            catch (MongoConnectionException mongoConnectEx)
-            {
-                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-            }
-            catch (MongoWriteException mongoWriteEx)
-            {
-                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
-            }
-            catch (MongoCommandException mongoCmdEx)
-            {
-                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
-        [Obsolete("Use the asynchronous method instead", true)]
-        public IEnumerable<TModel> FindMany(FilterDefinition<TModel> filterDefinition)
-        {
-            try
-            {
-                var found = _collection.Find(filterDefinition).ToList();
-
-                return found;
             }
             catch (MongoAuthenticationException mongoAuthEx)
             {
@@ -414,36 +251,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
             }
         }
 
-        [Obsolete("Use the asynchronous method instead", true)]
-        public DeleteResult Delete<TField>(TField id)
-        {
-            try
-            {
-                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
-                return _collection.DeleteOne(filter);
-            }
-            catch (MongoConnectionException mongoConnectEx)
-            {
-                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
-            }
-            catch (MongoWriteException mongoWriteEx)
-            {
-                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
-            }
-            catch (MongoCommandException mongoCmdEx)
-            {
-                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
         public async Task<DeleteResult> DeleteAsync<TField>(TField id)
         {
             try
@@ -508,6 +315,328 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
                 throw new NautilusMongoDbException("Mongo throws a general exception", ex);
             }
         }
+
+        #region Bulk operations
+        public async Task BulkInsertAsync(IEnumerable<TModel> models, IClientSessionHandle session, InsertManyOptions options = null, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.InsertManyAsync(session, models, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task BulkInsertAsync(IEnumerable<TModel> models, InsertManyOptions options = null, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.InsertManyAsync(models, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task BulkUpdateAsync(FilterDefinition<TModel> filter, UpdateDefinition<TModel> update, UpdateOptions options = null, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.UpdateManyAsync(filter, update, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task BulkUpdateAsync(Expression<Func<TModel, bool>> filter, UpdateDefinition<TModel> update, UpdateOptions options = null, CancellationToken token = default)
+        {
+            try
+            {
+                await _collection.UpdateManyAsync(filter, update, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task<DeleteResult> BulkDeleteAsync(FilterDefinition<TModel> filter, CancellationToken token = default)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(filter, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task<DeleteResult> BulkDeleteAsync(FilterDefinition<TModel> filter, DeleteOptions options, CancellationToken token = default)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(filter, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task<DeleteResult> BulkDeleteAsync(IClientSessionHandle session, FilterDefinition<TModel> filter, DeleteOptions options, CancellationToken token = default)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(session, filter, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task<DeleteResult> BulkDeleteAsync(Expression<Func<TModel, bool>> filter, CancellationToken token = default)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(filter, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task<DeleteResult> BulkDeleteAsync(Expression<Func<TModel, bool>> filter, DeleteOptions options, CancellationToken token = default)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(filter, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        public async Task<DeleteResult> BulkDeleteAsync(IClientSessionHandle session, Expression<Func<TModel, bool>> filter, DeleteOptions options, CancellationToken token = default)
+        {
+            try
+            {
+                return await _collection.DeleteManyAsync(session, filter, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+        #endregion
 
         #region [Protected] Create Index methods
         protected async Task CreateIndexAsync(string fieldName, bool isUnique = false)
@@ -584,6 +713,118 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
                 throw new NautilusMongoDbException("Mongo throws a general exception", ex);
             }
         }
+        #endregion
+
+        #region Properties
+        public TModel Model { get; private set; }
+
+        /// <summary>
+        /// For advance collection funcionalities, we use this property instead for now.
+        /// </summary>
+        public IMongoCollection<TModel> Collection
+        {
+            get
+            {
+                return _collection;
+            }
+        }
+        #endregion
+
+        #region Obsoleted methods
+        [Obsolete("Use the asynchronous method instead", true)]
+        public void Insert(TModel model)
+        {
+            try
+            {
+                _collection.InsertOne(model);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        [Obsolete("Use the asynchronous method instead", true)]
+        public void Upsert(Expression<Func<TModel, bool>> filter, TModel model)
+        {
+            try
+            {
+                _collection.ReplaceOne(filter, model, new ReplaceOptions()
+                {
+                    IsUpsert = true
+                });
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        [Obsolete("Use the asynchronous method instead", true)]
+        public DeleteResult Delete<TField>(TField id)
+        {
+            try
+            {
+                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
+                return _collection.DeleteOne(filter);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
 
         [Obsolete("Use the asynchronous method instead", true)]
         protected void CreateIndex(string fieldName, bool isUnique = false)
@@ -607,21 +848,105 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
 
             _collection.Indexes.CreateOne(indexModel);
         }
-        #endregion
 
-        #region Properties
-        public TModel Model { get; private set; }
-
-        /// <summary>
-        /// For advance collection funcionalities, we use this property instead for now.
-        /// </summary>
-        public IMongoCollection<TModel> Collection
+        [Obsolete("Use the asynchronous method instead", true)]
+        public TModel Find<TField>(TField id)
         {
-            get
+            try
             {
-                return _collection;
+                var filter = Builders<TModel>.Filter.Eq<TField>("_id", id);
+                var found = _collection.Find(filter).FirstOrDefault();
+
+                return found;
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        [Obsolete("Use the asynchronous method instead", true)]
+        public TModel Find(FilterDefinition<TModel> filterDefinition)
+        {
+            try
+            {
+                var found = _collection.Find(filterDefinition);
+
+                return found.FirstOrDefault();
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
+        [Obsolete("Use the asynchronous method instead", true)]
+        public IEnumerable<TModel> FindMany(FilterDefinition<TModel> filterDefinition)
+        {
+            try
+            {
+                var found = _collection.Find(filterDefinition).ToList();
+
+                return found;
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
             }
         }
         #endregion
+
     }
 }
