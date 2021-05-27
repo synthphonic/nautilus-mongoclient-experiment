@@ -317,6 +317,41 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Schema
         }
 
         #region Bulk operations
+        public BulkWriteResult<TModel> BulkWrite(
+            IEnumerable<WriteModel<TModel>> requests,
+            BulkWriteOptions options = null,
+            CancellationToken token = default)
+        {
+            try
+            {
+                return _collection.BulkWrite(requests, options, token);
+            }
+            catch (MongoAuthenticationException mongoAuthEx)
+            {
+                throw new NautilusMongoDbException("Mongo security error", mongoAuthEx);
+            }
+            catch (MongoConnectionException mongoConnectEx)
+            {
+                throw new NautilusMongoDbException(mongoConnectEx.Message, mongoConnectEx);
+            }
+            catch (MongoWriteException mongoWriteEx)
+            {
+                throw new NautilusMongoDbException("Mongo write error", mongoWriteEx);
+            }
+            catch (MongoCommandException mongoCmdEx)
+            {
+                throw new NautilusMongoDbException("Mongo command error", mongoCmdEx);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
+        }
+
         public async Task<BulkWriteResult<TModel>> BulkWriteAsync(
             IEnumerable<WriteModel<TModel>> requests,
             BulkWriteOptions options = null,
