@@ -10,8 +10,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoClient.Tests.Base;
+using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
 using MongoDB.Driver;
 using Nautilus.Diagnostics.Utilities;
@@ -33,7 +35,7 @@ namespace MongoClient.Tests
         [OneTimeTearDown]
         public async Task TearDownOneTime()
         {
-            await TearDown();
+            //await TearDown();
         }
 
         [Test]
@@ -86,8 +88,276 @@ namespace MongoClient.Tests
         }
 
         [Test]
+        [TestCase(25000)]
         [TestCase(50000)]
+        [TestCase(70000)]
         [TestCase(100000)]
+        [TestCase(200000)]
+        [TestCase(300000)]
+        [TestCase(400000)]
+        [TestCase(500000)]
+        public async Task BulkWriteAsync_Write_RawData_SingleThread_IsOrdered(int insertCount)
+        {
+            Console.WriteLine($"\nBulkWriteAsync_Write_RawData_SingleThread_IsOrdered (is ordered): TestCase = {insertCount} records");
+
+            //
+            // Arrange
+            var persons = new List<WriteModel<RawPayloadModel>>();
+            for (var i = 1; i <= insertCount; i++)
+            {
+                var model = await ReadJsonData<RawPayloadModel>("payload1.json");
+                var inserModel = new InsertOneModel<RawPayloadModel>(model);
+                persons.Add(inserModel);
+            }
+
+            //
+            // Act
+            var sw = ProcessStopwatch.Start();
+
+            var schema = _mongoService.GetSchema<RawPayloadModel>();
+            await schema.BulkWriteAsync(persons);
+
+            sw.Stop();
+            Console.WriteLine($"Total Records inserted {insertCount} : [{sw.Elapsed}] secs");
+
+            //
+            // Assert
+            var emptyFilter = CreateEmptyFilter<RawPayloadModel>();
+            var actualTotalDocuments = await schema.Collection.CountDocumentsAsync(emptyFilter);
+            Assert.AreEqual(insertCount, actualTotalDocuments);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<RawPayloadModel>();
+        }
+
+        [Ignore("This test is for illustration only. Use other test methods")]
+        [TestCase(25000, 2)]
+        //[TestCase(50000)]
+        //[TestCase(70000)]
+        //[TestCase(100000)]
+        //[TestCase(200000)]
+        //[TestCase(300000)]
+        //[TestCase(400000)]
+        //[TestCase(500000)]
+        public async Task BulkWriteAsync_Write_RawData_MultiThread_IsOrdered_Archive(int insertingRecordCount, int spawnThreadCount)
+        {
+            Console.WriteLine($"\nBulkWriteAsync_Write_RawData_MultiThread_IsOrdered (is ordered): TestCase = {insertingRecordCount} records");
+
+            //
+            // Arrange
+            var groupRecordTotal = insertingRecordCount / spawnThreadCount;
+            var groups = new List<List<WriteModel<RawPayloadModel>>>();
+
+            for (var a = 0; a < spawnThreadCount; a++)
+            {
+                var rawPayloadModels = new List<WriteModel<RawPayloadModel>>();
+                for (var i = 1; i <= groupRecordTotal; i++)
+                {
+                    var model = await ReadJsonData<RawPayloadModel>("payload1.json");
+                    var inserModel = new InsertOneModel<RawPayloadModel>(model);
+                    rawPayloadModels.Add(inserModel);
+                }
+
+                groups.Add(rawPayloadModels);
+            }
+
+            Console.WriteLine($"list[0] [{groups[0].Count()}] records...");
+            Console.WriteLine($"list[1] [{groups[1].Count()}] records...");
+            Console.WriteLine($"Data preparation completed...");
+
+            //
+            // Act
+            var schema = _mongoService.GetSchema<RawPayloadModel>();
+
+            #region 1st way
+            var task1 = schema.BulkWriteAsync(groups[0]);
+            Console.WriteLine($"Task1 created...");
+
+            Console.WriteLine("Task2: Bulk inserting begins...");
+            var task2 = schema.BulkWriteAsync(groups[1]);
+            #endregion
+
+            #region 2nd way
+            //var task1 = new Task(() =>
+            //{
+            //    var schema = _mongoService.GetSchema<RawPayloadModel>();
+
+            //    Console.WriteLine("Task1: Bulk inserting begins...");
+            //    schema.BulkWrite(groups[0]);
+            //});
+            //Console.WriteLine($"Task1 created...");
+
+            //var task2 = new Task(() =>
+            //{
+            //    var schema = _mongoService.GetSchema<RawPayloadModel>();
+
+            //    Console.WriteLine("Task2: Bulk inserting begins...");
+            //    schema.BulkWrite(groups[1]);
+            //});
+            //Console.WriteLine($"Task2 created...");
+            #endregion
+
+            var sw = ProcessStopwatch.Start();
+
+            Task.WaitAll(task1, task2);
+            Console.WriteLine($"Waiting for all task to complete...");
+            sw.Stop();
+
+            Console.WriteLine($"Total Records inserted {insertingRecordCount} : [{sw.Elapsed}] secs");
+
+            //
+            // Assert
+            var emptyFilter = CreateEmptyFilter<RawPayloadModel>();
+            var actualTotalDocuments = await schema.Collection.CountDocumentsAsync(emptyFilter);
+            Assert.AreEqual(insertingRecordCount, actualTotalDocuments);
+
+            //
+            // Post db cleanup
+            //await ExecutePostTestCleanupAsync<RawPayloadModel>();
+        }
+
+        [Test]
+        [TestCase(1239, 2)]
+        [TestCase(10000, 2)]
+        [TestCase(50000, 2)]
+        [TestCase(100000, 2)]
+        public async Task BulkWriteAsync_Write_RawData_Multi_Threads_IsOrdered(int recordsToProcess, int spawnThreadCount)
+        {
+            Console.WriteLine($"\nBulkWriteAsync_Write_RawData_Multi_Threads_IsOrdered (is ordered): TestCase = {recordsToProcess} records");
+            Console.WriteLine("==== INPUT PARAMETERS ====");
+            Console.WriteLine($"Expected Thread Count To Spawn {spawnThreadCount}");
+            Console.WriteLine($"Records To Process {recordsToProcess}");
+            Console.WriteLine();
+
+            #region Arrange
+            var engine = new ParallelThreadExecutionEngine<RawPayloadModel>();
+            var parallelExecutionPlan = ParallelThreadExecutionEngine.GenerateParallelExecutionPlan(spawnThreadCount, recordsToProcess);
+            Console.WriteLine($"Total records per loop is {parallelExecutionPlan.RecordsPerThread}");
+            Console.WriteLine($"Total records remaining {parallelExecutionPlan.RemainingRecords}");
+            Console.WriteLine($"Total expected threads to spawn {spawnThreadCount}");
+            Console.WriteLine($"Total actual threads to spawn {parallelExecutionPlan.ActualThreadCountToSpawn}");
+
+            for (var threadCount = 0; threadCount < parallelExecutionPlan.ActualThreadCountToSpawn; threadCount++)
+            {
+                IList<RawPayloadModel> models;
+                if (parallelExecutionPlan.ActualThreadCountToSpawn == threadCount + 1 && parallelExecutionPlan.RemainingRecords > 0)
+                {
+                    models = new List<RawPayloadModel>();
+
+                    // processing records for the last thread
+                    for (var i = 0; i < parallelExecutionPlan.RemainingRecords; i++)
+                    {
+                        var model = await ReadJsonData<RawPayloadModel>("payload1.json");
+                        models.Add(model);
+                    }
+
+                    engine.Add(models);
+
+                    continue;
+                }
+
+                models = new List<RawPayloadModel>();
+                for (var i = 0; i < parallelExecutionPlan.RecordsPerThread; i++)
+                {
+                    var model = await ReadJsonData<RawPayloadModel>("payload1.json");
+                    models.Add(model);
+                }
+
+                engine.Add(models);
+            }
+            #endregion
+
+            #region Act
+            var schema = _mongoService.GetSchema<RawPayloadModel>();
+            engine.SetSchema(schema);
+            engine.Execute();
+            Console.WriteLine($"Total Records inserted {recordsToProcess} : [{engine.Elapsed}] secs");
+            #endregion
+
+            //
+            // Assert
+            var emptyFilter = CreateEmptyFilter<RawPayloadModel>();
+            var actualTotalDocuments = await schema.Collection.CountDocumentsAsync(emptyFilter);
+            Assert.AreEqual(recordsToProcess, actualTotalDocuments);
+
+            //
+            // Post db cleanup
+            //await ExecutePostTestCleanupAsync<RawPayloadModel>();
+            await Task.Delay(3000); // release a bit of pressure to the code
+        }
+
+        [Test]
+        [TestCase(1239, 2)]
+        [TestCase(10000, 2)]
+        [TestCase(50000, 2)]
+        [TestCase(100000, 2)]
+        public async Task BulkWriteAsync_Write_RawData_Multi_Tasks_IsOrdered(int recordsToProcess, int spawnThreadCount)
+        {
+            Console.WriteLine($"\nBulkWriteAsync_Write_RawData_Multi_Tasks_IsOrdered (is ordered): TestCase = {recordsToProcess} records");
+            Console.WriteLine("==== INPUT PARAMETERS ====");
+            Console.WriteLine($"Expected Thread Count To Spawn {spawnThreadCount}");
+            Console.WriteLine($"Records To Process {recordsToProcess}");
+            Console.WriteLine();
+
+            #region Arrange
+            var engine = new ParallelThreadExecutionEngine<RawPayloadModel>();
+            var parallelExecutionPlan = ParallelThreadExecutionEngine.GenerateParallelExecutionPlan(spawnThreadCount, recordsToProcess);
+            Console.WriteLine($"Total records per loop is {parallelExecutionPlan.RecordsPerThread}");
+            Console.WriteLine($"Total records remaining {parallelExecutionPlan.RemainingRecords}");
+            Console.WriteLine($"Total expected threads to spawn {spawnThreadCount}");
+            Console.WriteLine($"Total actual threads to spawn {parallelExecutionPlan.ActualThreadCountToSpawn}");
+
+            for (var threadCount = 0; threadCount < parallelExecutionPlan.ActualThreadCountToSpawn; threadCount++)
+            {
+                IList<RawPayloadModel> models;
+                if (parallelExecutionPlan.ActualThreadCountToSpawn == threadCount + 1 && parallelExecutionPlan.RemainingRecords > 0)
+                {
+                    models = new List<RawPayloadModel>();
+
+                    // processing records for the last thread
+                    for (var i = 0; i < parallelExecutionPlan.RemainingRecords; i++)
+                    {
+                        var model = await ReadJsonData<RawPayloadModel>("payload1.json");
+                        models.Add(model);
+                        //var inserModel = new InsertOneModel<RawPayloadModel>(model);
+                    }
+
+                    engine.Add(models);
+
+                    continue;
+                }
+
+                models = new List<RawPayloadModel>();
+                for (var i = 0; i < parallelExecutionPlan.RecordsPerThread; i++)
+                {
+                    var model = await ReadJsonData<RawPayloadModel>("payload1.json");
+                    models.Add(model);
+                }
+
+                engine.Add(models);
+            }
+            #endregion
+
+            #region Act
+            var schema = _mongoService.GetSchema<RawPayloadModel>();
+            engine.SetSchema(schema);
+            engine.Execute();
+            Console.WriteLine($"Total Records inserted {recordsToProcess} : [{engine.Elapsed}] secs");
+            #endregion
+
+            //
+            // Assert
+            var emptyFilter = CreateEmptyFilter<RawPayloadModel>();
+            var actualTotalDocuments = await schema.Collection.CountDocumentsAsync(emptyFilter);
+            Assert.AreEqual(recordsToProcess, actualTotalDocuments);
+
+            //
+            // Post db cleanup
+            //await ExecutePostTestCleanupAsync<RawPayloadModel>();
+            await Task.Delay(3000); // release a bit of pressure to the code
+        }
+
         [TestCase(200000)]
         [TestCase(300000)]
         [TestCase(400000)]

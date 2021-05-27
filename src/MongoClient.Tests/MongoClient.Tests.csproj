@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
@@ -20,6 +20,7 @@
 		<Folder Include="Models\Schema\" />
 		<Folder Include="Base\" />
 		<Folder Include="_config\" />
+		<Folder Include="_data\" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="AppSettings\appsettings.Development.json" />
@@ -34,6 +35,9 @@
 	<ItemGroup>
 		<None Update="_config\appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="_data\payload1.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 </Project>

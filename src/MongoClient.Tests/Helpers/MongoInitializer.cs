@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MongoClient.Tests.Models.Schema;
 using MongoDB.Bson;
 using Nautilus.Experiment.DataProvider.Mongo;
 
@@ -13,18 +12,12 @@ namespace MongoClient.Tests.Helpers
 
         public static ObjectId NotFoundId = new ObjectId("2fcd299f9e1d7d949562d108");
 
-        internal static MongoService Initialize(string databaseName)
+        internal static MongoService Initialize(string databaseName, Type[] schemas)
         {
             DatabaseName = databaseName;
 
             var mongoService = new MongoService(ConnectionString, DatabaseName);
-            mongoService.RegisterSchemas(new Type[]
-            {
-                typeof(PersonSchema),
-                typeof(UserSchema),
-                typeof(CategorySchema)
-            });
-
+            mongoService.RegisterSchemas(schemas);
             mongoService.UseCamelCase();
             mongoService.Connect();
 
