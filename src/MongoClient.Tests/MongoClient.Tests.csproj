@@ -21,6 +21,7 @@
 		<Folder Include="Base\" />
 		<Folder Include="_config\" />
 		<Folder Include="_data\" />
+		<Folder Include="ParallelEngine\" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="AppSettings\appsettings.Development.json" />

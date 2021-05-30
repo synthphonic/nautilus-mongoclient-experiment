@@ -18,8 +18,6 @@ namespace MongoClient.Tests
 
             await SetupMongoDb();
             await TearDownOneTime();
-            //await OneTimeSetup();
-            //await OneTimeTearDown();
         }
 
         [OneTimeTearDown]

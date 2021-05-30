@@ -45,6 +45,11 @@ namespace MongoClient.Tests
             Assert.NotNull(p);
             Assert.AreEqual("BatAsync", assertPerson.FirstName);
             Assert.AreEqual("ManAsync", assertPerson.LastName);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<Person>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
 
         [Test]
@@ -76,6 +81,11 @@ namespace MongoClient.Tests
             Assert.AreEqual("ToniAsync", assertPerson.FirstName);
             Assert.AreEqual("StorkeAsync", assertPerson.LastName);
             Assert.AreEqual(false, assertPerson.Active);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<Person>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
 
         [Test]
@@ -113,6 +123,11 @@ namespace MongoClient.Tests
             Assert.NotNull(foundPerson);
             Assert.AreEqual("Super", foundPerson.FirstName);
             Assert.AreEqual("Man", foundPerson.LastName);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<Person>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
 
         [Test]
@@ -132,6 +147,11 @@ namespace MongoClient.Tests
             //
             // Assert
             Assert.Null(foundPerson);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<Person>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
 
         [Test]
@@ -159,6 +179,11 @@ namespace MongoClient.Tests
             Assert.NotNull(user);
             Assert.AreEqual("Smiggle", assertPerson.FirstName);
             Assert.AreEqual("Golum", assertPerson.LastName);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<Person>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
 
         [Test]
@@ -224,6 +249,11 @@ namespace MongoClient.Tests
             // Assert
             var assertPerson = await schema.FindAsync(user.Id);
             Assert.Null(assertPerson);
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<User>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
 
         [Test]
@@ -263,6 +293,11 @@ namespace MongoClient.Tests
 
             Assert.NotNull(searchShawnResults);
             Assert.AreEqual(2, searchTototResults.Count());
+
+            //
+            // Post db cleanup
+            await ExecutePostTestCleanupAsync<Category>();
+            await Task.Delay(1500); // release a bit of pressure to the code
         }
     }
 }
