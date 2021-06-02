@@ -9,25 +9,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoClient.Tests", "MongoC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform", "Platform", "{1F9B5D8E-A8BC-4928-A383-598C7BDDC914}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.Tests.Core", "..\nautilus-platform\Nautilus.Tests.Core\Nautilus.Tests.Core.csproj", "{3CDC7BD5-8F27-4335-8B57-52D5D31330E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.Tests.Core", "..\..\nautilus-platform\nautilus\Nautilus.Tests.Core\Nautilus.Tests.Core.csproj", "{3CDC7BD5-8F27-4335-8B57-52D5D31330E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus", "..\nautilus-platform\Nautilus\Nautilus.csproj", "{D4231331-8CDC-44CA-8B55-BD16CA99C79D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataConfigurator", "..\..\nautilus-platform\nautilus\Nautilus.DataConfigurator\Nautilus.DataConfigurator.csproj", "{66C2EDA6-EF3D-45A4-BFE3-534C42A6896E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.Data", "..\nautilus-platform\Nautilus.Data\Nautilus.Data.csproj", "{6F2B4171-4A1D-4090-94D0-1265DB53B64E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataCore", "..\..\nautilus-platform\nautilus\Nautilus.DataCore\Nautilus.DataCore.csproj", "{7A4140CD-E99C-4EEF-8C77-E556801BA2D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataConfigurator", "..\nautilus-platform\Nautilus.DataConfigurator\Nautilus.DataConfigurator.csproj", "{66C2EDA6-EF3D-45A4-BFE3-534C42A6896E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataGeneratorCore", "..\..\nautilus-platform\nautilus\Nautilus.DataGeneratorCore\Nautilus.DataGeneratorCore.csproj", "{B12678AD-FA74-4B0C-B3E6-68E67204D0C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataCore", "..\nautilus-platform\Nautilus.DataCore\Nautilus.DataCore.csproj", "{7A4140CD-E99C-4EEF-8C77-E556801BA2D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.IdentityCore", "..\..\nautilus-platform\nautilus\Nautilus.IdentityCore\Nautilus.IdentityCore.csproj", "{1DCD4B72-60D5-49FC-828F-7A0CC78929E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataGeneratorCore", "..\nautilus-platform\Nautilus.DataGeneratorCore\Nautilus.DataGeneratorCore.csproj", "{B12678AD-FA74-4B0C-B3E6-68E67204D0C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataProviderCore", "..\..\nautilus-platform\nautilus\Nautilus.DataProviderCore\Nautilus.DataProviderCore.csproj", "{607450D4-40F1-4D7F-9C81-8641C9FF0A04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.IdentityCore", "..\nautilus-platform\Nautilus.IdentityCore\Nautilus.IdentityCore.csproj", "{1DCD4B72-60D5-49FC-828F-7A0CC78929E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataProvider.Sqlite", "..\..\nautilus-platform\nautilus\Nautilus.DataProvider.InMemorySqlite\Nautilus.DataProvider.Sqlite.csproj", "{673862A0-1370-494F-BA40-25B2078AD93D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataProviderCore", "..\nautilus-platform\Nautilus.DataProviderCore\Nautilus.DataProviderCore.csproj", "{607450D4-40F1-4D7F-9C81-8641C9FF0A04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataProvider.SqlServer", "..\..\nautilus-platform\nautilus\Nautilus.DataProvider.SqlServer\Nautilus.DataProvider.SqlServer.csproj", "{353B96CD-F818-4192-8C74-4D9D93E0E2DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataProvider.Sqlite", "..\nautilus-platform\Nautilus.DataProvider.InMemorySqlite\Nautilus.DataProvider.Sqlite.csproj", "{673862A0-1370-494F-BA40-25B2078AD93D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus", "..\..\nautilus-platform\nautilus\Nautilus\Nautilus.csproj", "{60B68F63-9960-46FE-8E2F-38001B3FA0CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.DataProvider.SqlServer", "..\nautilus-platform\Nautilus.DataProvider.SqlServer\Nautilus.DataProvider.SqlServer.csproj", "{353B96CD-F818-4192-8C74-4D9D93E0E2DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nautilus.Data", "..\..\nautilus-platform\nautilus\Nautilus.Data\Nautilus.Data.csproj", "{C3CED88A-0E98-49AC-8B7A-03761BA2BA3D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,14 +47,6 @@ Global
 		{3CDC7BD5-8F27-4335-8B57-52D5D31330E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CDC7BD5-8F27-4335-8B57-52D5D31330E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CDC7BD5-8F27-4335-8B57-52D5D31330E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4231331-8CDC-44CA-8B55-BD16CA99C79D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4231331-8CDC-44CA-8B55-BD16CA99C79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4231331-8CDC-44CA-8B55-BD16CA99C79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4231331-8CDC-44CA-8B55-BD16CA99C79D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F2B4171-4A1D-4090-94D0-1265DB53B64E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F2B4171-4A1D-4090-94D0-1265DB53B64E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F2B4171-4A1D-4090-94D0-1265DB53B64E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F2B4171-4A1D-4090-94D0-1265DB53B64E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{66C2EDA6-EF3D-45A4-BFE3-534C42A6896E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{66C2EDA6-EF3D-45A4-BFE3-534C42A6896E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66C2EDA6-EF3D-45A4-BFE3-534C42A6896E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,6 +75,14 @@ Global
 		{353B96CD-F818-4192-8C74-4D9D93E0E2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{353B96CD-F818-4192-8C74-4D9D93E0E2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{353B96CD-F818-4192-8C74-4D9D93E0E2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60B68F63-9960-46FE-8E2F-38001B3FA0CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60B68F63-9960-46FE-8E2F-38001B3FA0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60B68F63-9960-46FE-8E2F-38001B3FA0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60B68F63-9960-46FE-8E2F-38001B3FA0CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3CED88A-0E98-49AC-8B7A-03761BA2BA3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3CED88A-0E98-49AC-8B7A-03761BA2BA3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3CED88A-0E98-49AC-8B7A-03761BA2BA3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3CED88A-0E98-49AC-8B7A-03761BA2BA3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,8 +92,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3CDC7BD5-8F27-4335-8B57-52D5D31330E8} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
-		{D4231331-8CDC-44CA-8B55-BD16CA99C79D} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
-		{6F2B4171-4A1D-4090-94D0-1265DB53B64E} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
 		{66C2EDA6-EF3D-45A4-BFE3-534C42A6896E} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
 		{7A4140CD-E99C-4EEF-8C77-E556801BA2D8} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
 		{B12678AD-FA74-4B0C-B3E6-68E67204D0C9} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
@@ -101,5 +99,7 @@ Global
 		{607450D4-40F1-4D7F-9C81-8641C9FF0A04} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
 		{673862A0-1370-494F-BA40-25B2078AD93D} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
 		{353B96CD-F818-4192-8C74-4D9D93E0E2DA} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
+		{60B68F63-9960-46FE-8E2F-38001B3FA0CA} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
+		{C3CED88A-0E98-49AC-8B7A-03761BA2BA3D} = {1F9B5D8E-A8BC-4928-A383-598C7BDDC914}
 	EndGlobalSection
 EndGlobal

@@ -21,6 +21,6 @@
 		</Reference>
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\nautilus-platform\Nautilus\Nautilus.csproj" />
+	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus\Nautilus.csproj" />
 	</ItemGroup>
 </Project>
