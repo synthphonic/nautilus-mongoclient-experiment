@@ -11,8 +11,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Nautilus.Experiment.DataProvider.Mongo\Nautilus.Experiment.DataProvider.Mongo.csproj" />
-		<ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus.Tests.Core\Nautilus.Tests.Core.csproj" />
-		<ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus\Nautilus.csproj" />
+		<ProjectReference Include="..\..\nautilus-platform\Nautilus\Nautilus.csproj" />
+		<ProjectReference Include="..\..\nautilus-platform\Nautilus.Tests.Core\Nautilus.Tests.Core.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Models\" />
