@@ -15,7 +15,10 @@ using Nautilus.Experiment.DataProvider.Mongo.Schema;
 
 namespace Nautilus.Experiment.DataProvider.Mongo
 {
-    public class MongoService
+    /// <summary>
+    /// Represents a Mongo database class for registration, connection and others.
+    /// </summary>
+    public class MongoService : IMongoService
     {
         private readonly string _databaseName;
         private readonly MongoClientSettings _mongoClientSettings;
@@ -25,8 +28,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         private IList<MongoBaseSchema> _initializedSchemas;
         private IEnumerable<Type> _registeringSchemaTypes;
 
-        public MongoService(string connectionString, string databaseName)
-            : this(MongoClientSettings.FromConnectionString(connectionString), string.Empty)
+        /// <summary>
+        /// ctor. initialize a MongoService instance.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="connectionString"></param>
+        /// <param name="databaseName"></param>
+        public MongoService(string key, string connectionString, string databaseName)
+            : this(key, MongoClientSettings.FromConnectionString(connectionString), string.Empty)
         {
             _mongoClientSettings = MongoClientSettings.FromConnectionString(connectionString);
             _databaseName = databaseName;
@@ -34,7 +43,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             _initializedSchemas = new List<MongoBaseSchema>();
         }
 
-        public MongoService(MongoClientSettings mongoClientSettings, string databaseName)
+        /// <summary>
+        /// ctor. initialize a MongoService instance.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="mongoClientSettings"></param>
+        /// <param name="databaseName"></param>
+        public MongoService(string key, MongoClientSettings mongoClientSettings, string databaseName)
         {
             _mongoClientSettings = mongoClientSettings;
 
@@ -43,6 +58,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
                 databaseName;
 
             _initializedSchemas = new List<MongoBaseSchema>();
+
+            Key = key;
         }
 
         /// <summary>
@@ -104,35 +121,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             await _mongoClient.DropDatabaseAsync(databaseName, token);
         }
 
-        private void InitializeSchema(Type schemaType)
-        {
-            try
-            {
-                var instance = (MongoBaseSchema)Activator.CreateInstance(schemaType, new object[] { _database });
-                instance.CreateIndexes();
-
-                _initializedSchemas.Add(instance);
-
-
-
-                //foreach (var schemaType in _registeringSchemaTypes)
-                //{
-                //	var instance = (MongoBaseSchema)Activator.CreateInstance(schemaType, new object[] { _database });
-                //	instance.CreateIndexes();
-
-                //	initializedSchemas.Add(instance);
-                //}
-            }
-            catch (TimeoutException timeoutEx)
-            {
-                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
-            }
-            catch (Exception ex)
-            {
-                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
-            }
-        }
-
         public MongoBaseSchema<TModel> GetSchema<TModel>() where TModel : class, new()
         {
             var modelInstance = new TModel();
@@ -158,6 +146,25 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             }
 
             return found as MongoBaseSchema<TModel>;
+        }
+
+        private void InitializeSchema(Type schemaType)
+        {
+            try
+            {
+                var instance = (MongoBaseSchema)Activator.CreateInstance(schemaType, new object[] { _database });
+                instance.CreateIndexes();
+
+                _initializedSchemas.Add(instance);
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                throw new NautilusMongoDbException("Mongo has timed out", timeoutEx);
+            }
+            catch (Exception ex)
+            {
+                throw new NautilusMongoDbException("Mongo throws a general exception", ex);
+            }
         }
 
         private string ProcessSchemaName(object modelInstance)
@@ -198,15 +205,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             }
         }
 
-        //public MongoBaseSchema<TModel> GetSchema2<TModel>() where TModel : class, new()
-        //{
-        //	Console.WriteLine($"Fetching schema for {new TModel().GetType().FullName}");
-
-        //	var schemaName = ProcessSchemaName<TModel>();
-
-        //	var found = initializedSchemas.FirstOrDefault(x => x.TableNameMongo.Equals(schemaName));
-
-        //	return found as MongoBaseSchema<TModel>;
-        //}
+        #region Properties
+        public string Key { get; private set; }
+        #endregion
     }
 }

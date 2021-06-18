@@ -6,14 +6,13 @@ using MongoClient.Tests.Models;
 using MongoClient.Tests.Models.Schema;
 using MongoDB.Driver;
 using Nautilus.Experiment.DataProvider.Mongo;
-using Nautilus.Tests.Core.Configuration;
 using Newtonsoft.Json;
 
 namespace MongoClient.Tests.Base
 {
     public class BaseTest
     {
-        private Config _config;
+       
         private Type[] _schemaTypes;
         protected MongoService _mongoService;
 
@@ -52,13 +51,6 @@ namespace MongoClient.Tests.Base
 
         private async Task SetupMongo_WithAuth()
         {
-            _config = new Config();
-            _config.Initialize();
-
-            //var appSettingSection = Configuration.GetSection("AppSettings");
-            //_passKeeprAppSettings = appSettingSection.Get<AppSettings>();
-            //services.AddSingleton(_passKeeprAppSettings);
-
             _mongoService = MongoInitializer.Initialize(DatabaseName, _schemaTypes);
             await Task.Delay(2000);
         }

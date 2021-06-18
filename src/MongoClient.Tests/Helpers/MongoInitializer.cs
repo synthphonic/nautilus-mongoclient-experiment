@@ -8,7 +8,8 @@ namespace MongoClient.Tests.Helpers
 {
     internal static class MongoInitializer
     {
-        const string ConnectionString = "mongodb://localhost:27017";
+        private const string ConnectionString = "mongodb://localhost:27017";
+        private const string MongoDbKey = "DBKEY";
 
         public static ObjectId NotFoundId = new ObjectId("2fcd299f9e1d7d949562d108");
 
@@ -16,7 +17,7 @@ namespace MongoClient.Tests.Helpers
         {
             DatabaseName = databaseName;
 
-            var mongoService = new MongoService(ConnectionString, DatabaseName);
+            var mongoService = new MongoService(MongoDbKey, ConnectionString, DatabaseName);
             mongoService.RegisterSchemas(schemas);
             mongoService.UseCamelCase();
             mongoService.Connect();
@@ -33,7 +34,7 @@ namespace MongoClient.Tests.Helpers
         /// <returns></returns>
         internal static MongoService CreateMongoService(IEnumerable<Type> schemaTypes, string databasename = "test_db", string connectionString = "mongodb://localhost:27017")
         {
-            var mongoService = new MongoService(connectionString, databasename);
+            var mongoService = new MongoService(MongoDbKey, connectionString, databasename);
             mongoService.RegisterSchemas(schemaTypes.ToArray());
 
             return mongoService;

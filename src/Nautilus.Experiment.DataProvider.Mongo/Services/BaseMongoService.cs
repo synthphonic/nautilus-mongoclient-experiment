@@ -9,13 +9,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 {
     public class BaseMongoService<TModel, TIdField, TUserIdField> where TModel : MongoBaseModel<TIdField, TUserIdField>, new()
 	{
-		private readonly MongoService _mongoService;
-
-		public BaseMongoService(MongoService mongoService)
-		{
-			ConsoleOutput.Write(GetType());
-			_mongoService = mongoService;
-		}
+		private IMongoService _mongoService;
 
 		public async Task DeleteAsync(TIdField id)
 		{
@@ -139,6 +133,12 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 		{
             ConsoleOutput.Write(GetType());
 			return _mongoService.GetSchema<TMongoModel>();
+		}
+
+		protected virtual void SetMongoService(IMongoService service)
+        {
+			ConsoleOutput.Write(GetType());
+			_mongoService = service;
 		}
 	}
 }
