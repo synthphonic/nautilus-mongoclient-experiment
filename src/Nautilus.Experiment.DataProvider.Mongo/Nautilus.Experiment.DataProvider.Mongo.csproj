@@ -17,11 +17,6 @@
 		<Folder Include="Services\" />
 	</ItemGroup>
 	<ItemGroup>
-		<Reference Include="Nautilus">
-			<HintPath>..\..\binaries\Nautilus.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-	<ItemGroup>
 	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus\Nautilus.csproj" />
 	</ItemGroup>
 </Project>
