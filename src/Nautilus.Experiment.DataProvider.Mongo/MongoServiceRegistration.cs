@@ -75,13 +75,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         }
 
         [Obsolete("Use the extension method RegisterMongoDatabases() instead", true)]
-        public static void Register(IServiceCollection services, AppSettings _passKeeprAppSettings)
+        public static void Register(IServiceCollection services, AppSettings appSettings)
         {
             var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
 
             MongoServiceFactory mongoFactory = new();
 
-            foreach (var providerItem in _passKeeprAppSettings.MongoDatabaseProviders)
+            foreach (var providerItem in appSettings.MongoDatabaseProviders)
             {
                 ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
                 Console.WriteLine($"KEY: {providerItem.Key}");
@@ -107,13 +107,13 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         }
 
         [Obsolete("Use the extension method RegisterMongoDatabases() instead", true)]
-        public static void Register(IServiceCollection services, AppSettings _passKeeprAppSettings, IEnumerable<Type> schemas)
+        public static void Register(IServiceCollection services, AppSettings appSettings, IEnumerable<Type> schemas)
         {
             var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
 
             MongoServiceFactory mongoFactory = new();
 
-            foreach (var providerItem in _passKeeprAppSettings.MongoDatabaseProviders)
+            foreach (var providerItem in appSettings.MongoDatabaseProviders)
             {
                 ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
                 Console.WriteLine($"KEY: {providerItem.Key}");
