@@ -108,6 +108,18 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
         public void RegisterSchemas(IEnumerable<Type> schemaTypes)
         {
+            //
+            // validate all the incoming schemaTypes to see
+            // if all of them inherit from MongoBaseSchema
+            //
+            foreach (var item in schemaTypes)
+            {
+                if (!item.UnderlyingSystemType.BaseType.Name.Contains(nameof(MongoBaseSchema)))
+                {
+                    throw new NautilusMongoDbException($"Type '{item.Name}' does not have base type of MongoBaseSchema");
+                }
+            }
+
             _registeringSchemaTypes = schemaTypes;
         }
 
