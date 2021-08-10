@@ -19,8 +19,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
     /// Represents a Mongo database class for registration, connection and others.
     /// </summary>
     public class MongoService : IMongoService
-    {
-        private readonly string _databaseName;
+    {        
         private readonly MongoClientSettings _mongoClientSettings;
 
         private MongoClient _mongoClient;
@@ -38,7 +37,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             : this(key, MongoClientSettings.FromConnectionString(connectionString), string.Empty)
         {
             _mongoClientSettings = MongoClientSettings.FromConnectionString(connectionString);
-            _databaseName = databaseName;
+            DatabaseName = databaseName;
 
             _initializedSchemas = new List<MongoBaseSchema>();
         }
@@ -53,7 +52,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         {
             _mongoClientSettings = mongoClientSettings;
 
-            _databaseName = _mongoClientSettings.Credential != null ?
+            DatabaseName = _mongoClientSettings.Credential != null ?
                 _mongoClientSettings.Credential.Source :
                 databaseName;
 
@@ -79,7 +78,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
                 {
                     _mongoClient = new MongoClient(_mongoClientSettings);
 
-                    _database = _mongoClient.GetDatabase(_databaseName);
+                    _database = _mongoClient.GetDatabase(DatabaseName);
 
                     //InitializeSchemas();
 
@@ -123,14 +122,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             _registeringSchemaTypes = schemaTypes;
         }
 
-        public void DropDatabase(string databaseName)
+        public void DropDatabase()
         {
-            _mongoClient.DropDatabase(databaseName);
+            _mongoClient.DropDatabase(DatabaseName);
         }
 
-        public async Task DropDatabaseAsync(string databaseName, CancellationToken token = default)
+        public async Task DropDatabaseAsync(CancellationToken token = default)
         {
-            await _mongoClient.DropDatabaseAsync(databaseName, token);
+            await _mongoClient.DropDatabaseAsync(DatabaseName, token);
         }
 
         public MongoBaseSchema<TModel> GetSchema<TModel>() where TModel : class, new()
@@ -219,6 +218,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
         #region Properties
         public string Key { get; private set; }
+        public string DatabaseName { get; }
         #endregion
     }
 }

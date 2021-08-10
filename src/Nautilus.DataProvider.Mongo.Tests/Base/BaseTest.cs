@@ -39,7 +39,7 @@ namespace MongoClient.Tests.Base
 
         protected virtual async Task TearDown()
         {
-            await _mongoService.DropDatabaseAsync(MongoInitializer.DatabaseName);
+            await _mongoService.DropDatabaseAsync();
             await Task.Delay(2000);
         }
 

@@ -17,6 +17,11 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         string Key { get; }
 
         /// <summary>
+        /// The database name attached to the mongo service provided by a configuration
+        /// </summary>
+        string DatabaseName { get; }
+
+        /// <summary>
         /// Connect to mongo db
         /// </summary>
         void Connect();
@@ -24,16 +29,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo
         /// <summary>
         /// Drop database
         /// </summary>
-        /// <param name="databaseName"></param>
-        void DropDatabase(string databaseName);
+        void DropDatabase();
 
         /// <summary>
         /// Drop database asynchronously
         /// </summary>
-        /// <param name="databaseName"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        Task DropDatabaseAsync(string databaseName, CancellationToken token = default);
+        Task DropDatabaseAsync(CancellationToken token = default);
 
         /// <summary>
         /// Gets a mongo db collection schema
