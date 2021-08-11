@@ -124,7 +124,14 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
         public void DropDatabase()
         {
-            _mongoClient.DropDatabase(DatabaseName);
+            try
+            {
+                _mongoClient.DropDatabase(DatabaseName);
+            }
+            catch(Exception)
+            {
+                throw new NautilusMongoDbException($"Cannot drop database. Database '{DatabaseName}' does not exists");
+            }
         }
 
         public async Task DropDatabaseAsync(CancellationToken token = default)
