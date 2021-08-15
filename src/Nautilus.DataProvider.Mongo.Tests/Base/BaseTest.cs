@@ -12,9 +12,9 @@ namespace MongoClient.Tests.Base
 {
     public class BaseTest
     {
-       
+        private const int Delay = 3000;
         private Type[] _schemaTypes;
-        protected MongoService _mongoService;
+        protected MongoService MongoService;
 
         protected string DatabaseName { get; set; }
 
@@ -25,7 +25,9 @@ namespace MongoClient.Tests.Base
                 typeof(PersonSchema),
                 typeof(UserSchema),
                 typeof(CategorySchema),
-                typeof(RawPayloadSchema)
+                typeof(CategoryDetailSchema),
+                typeof(RawPayloadSchema),
+                typeof(NoAttributeModelSchema)
             };
         }
 
@@ -39,20 +41,20 @@ namespace MongoClient.Tests.Base
 
         protected virtual async Task TearDown()
         {
-            await _mongoService.DropDatabaseAsync();
-            await Task.Delay(2000);
+            await MongoService.DropDatabaseAsync();
+            await Task.Delay(Delay);
         }
 
         private async Task SetupMongo_NoAuth()
         {
-            _mongoService = MongoInitializer.Initialize(DatabaseName, _schemaTypes);
-            await Task.Delay(2000);
+            MongoService = MongoInitializer.Initialize(DatabaseName, _schemaTypes);
+            await Task.Delay(Delay);
         }
 
         private async Task SetupMongo_WithAuth()
         {
-            _mongoService = MongoInitializer.Initialize(DatabaseName, _schemaTypes);
-            await Task.Delay(2000);
+            MongoService = MongoInitializer.Initialize(DatabaseName, _schemaTypes);
+            await Task.Delay(Delay);
         }
 
         #region Helpers
@@ -97,11 +99,11 @@ namespace MongoClient.Tests.Base
 
         protected async Task ExecutePostTestCleanupAsync<TModel>() where TModel : class, new()
         {
-            var schema = _mongoService.GetSchema<TModel>();
+            var schema = MongoService.GetSchema<TModel>();
             await schema.DeleteManyAsync(CreateEmptyFilter<TModel>());
         }
         #endregion
     }
 
-    
+
 }
