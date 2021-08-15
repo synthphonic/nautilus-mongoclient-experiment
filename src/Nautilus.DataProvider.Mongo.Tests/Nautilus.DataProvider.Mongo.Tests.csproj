@@ -39,6 +39,5 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Nautilus.Experiment.DataProvider.Mongo\Nautilus.Experiment.DataProvider.Mongo.csproj" />
-	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus.DataConfigurator\Nautilus.DataConfigurator.csproj" />
 	</ItemGroup>
 </Project>
