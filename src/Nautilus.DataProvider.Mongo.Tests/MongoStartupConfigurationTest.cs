@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MongoClient.Tests.Base;
-using MongoClient.Tests.Helpers;
 using MongoClient.Tests.Models;
-using MongoClient.Tests.Models.Schema;
 using NUnit.Framework;
 
 namespace MongoClient.Tests
@@ -17,7 +13,7 @@ namespace MongoClient.Tests
             DatabaseName = "configuration_test_db";
 
             await SetupMongoDb();
-            await TearDownOneTime();
+            //await TearDownOneTime();
         }
 
         [OneTimeTearDown]
@@ -30,23 +26,23 @@ namespace MongoClient.Tests
         public void Use_CollectionNameAttribute_Conventions()
         {
             #region Arrange
-            var schemaTypes = new List<Type>
-                {
-                    typeof(UserSchema),
-                    typeof(CategorySchema),
-                    typeof(PersonSchema),
-                    typeof(CategoryDetailSchema)
-                };
+            //var schemaTypes = new List<Type>
+            //    {
+            //        typeof(UserSchema),
+            //        typeof(CategorySchema),
+            //        typeof(PersonSchema),
+            //        typeof(CategoryDetailSchema)
+            //    };
 
-            _mongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
-            _mongoService.Connect();
+            //MongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
+            //MongoService.Connect();
             #endregion
 
             #region Act
-            var userSchema = _mongoService.GetSchema<User>();
-            var personSchema = _mongoService.GetSchema<Person>();
-            var categorySchema = _mongoService.GetSchema<Category>();
-            var categoryDetailSchema = _mongoService.GetSchema<CategoryDetail>();
+            var userSchema = MongoService.GetSchema<User>();
+            var personSchema = MongoService.GetSchema<Person>();
+            var categorySchema = MongoService.GetSchema<Category>();
+            var categoryDetailSchema = MongoService.GetSchema<CategoryDetail>();
             #endregion
 
             #region Assert
@@ -61,25 +57,24 @@ namespace MongoClient.Tests
         public void Use_CamelCasing_Property_Conventions()
         {
             #region Arrange
-            var schemaTypes = new List<Type>
-                {
-                    typeof(CategorySchema),
-                    typeof(PersonSchema),
-                    typeof(UserSchema),
-                    typeof(CategoryDetailSchema)
-                };
+            //var schemaTypes = new List<Type>
+            //    {
+            //        typeof(CategorySchema),
+            //        typeof(PersonSchema),
+            //        typeof(UserSchema),
+            //        typeof(CategoryDetailSchema)
+            //    };
 
-            _mongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
-            _mongoService.UseCamelCase();
-            _mongoService.Connect();
-
+            //MongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
+            //MongoService.UseCamelCase();
+            //MongoService.Connect();
             #endregion
 
             #region Act
-            var userSchema = _mongoService.GetSchema<User>();
-            var personSchema = _mongoService.GetSchema<Person>();
-            var categorySchema = _mongoService.GetSchema<Category>();
-            var categoryDetailSchema = _mongoService.GetSchema<CategoryDetail>();
+            var userSchema = MongoService.GetSchema<User>();
+            var personSchema = MongoService.GetSchema<Person>();
+            var categorySchema = MongoService.GetSchema<Category>();
+            var categoryDetailSchema = MongoService.GetSchema<CategoryDetail>();
             #endregion
 
             #region Assert
@@ -94,25 +89,25 @@ namespace MongoClient.Tests
         public void Use_CollectionNameAttribute_And_NoAttribute_Conventions()
         {
             #region Arrange
-            var schemaTypes = new List<Type>
-                {
-                    typeof(CategorySchema),
-                    typeof(PersonSchema),
-                    typeof(UserSchema),
-                    typeof(CategoryDetailSchema),
-                    typeof(NoAttributeModelSchema),
-                };
+            //var schemaTypes = new List<Type>
+            //    {
+            //        typeof(CategorySchema),
+            //        typeof(PersonSchema),
+            //        typeof(UserSchema),
+            //        typeof(CategoryDetailSchema),
+            //        typeof(NoAttributeModelSchema),
+            //    };
 
-            _mongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
-            _mongoService.Connect();
+            //MongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
+            //MongoService.Connect();
             #endregion
 
             #region Act
-            var userSchema = _mongoService.GetSchema<User>();
-            var personSchema = _mongoService.GetSchema<Person>();
-            var categorySchema = _mongoService.GetSchema<Category>();
-            var categoryDetailSchema = _mongoService.GetSchema<CategoryDetail>();
-            var noAttributeSchema = _mongoService.GetSchema<NoAttributeModel>();
+            var userSchema = MongoService.GetSchema<User>();
+            var personSchema = MongoService.GetSchema<Person>();
+            var categorySchema = MongoService.GetSchema<Category>();
+            var categoryDetailSchema = MongoService.GetSchema<CategoryDetail>();
+            var noAttributeSchema = MongoService.GetSchema<NoAttributeModel>();
             #endregion
 
             #region Assert

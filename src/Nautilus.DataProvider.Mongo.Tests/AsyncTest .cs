@@ -17,7 +17,7 @@ namespace MongoClient.Tests
             DatabaseName = "async-test-db";
 
             await SetupMongoDb();
-            await TearDown();
+            //await TearDown();
         }
 
         [OneTimeTearDown]
@@ -31,7 +31,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             var p = new Person { FirstName = "BatAsync", LastName = "ManAsync", Active = true };
 
             //
@@ -57,7 +57,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             var newPerson = new Person { FirstName = "TonyAsync", LastName = "StarkAsync", Active = true };
 
             await schema.InsertAsync(newPerson);
@@ -93,7 +93,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var personSchema = _mongoService.GetSchema<Person>();
+            var personSchema = MongoService.GetSchema<Person>();
 
             //
             // Act
@@ -109,7 +109,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             var p = new Person { FirstName = "Super", LastName = "Man", Active = true };
             await schema.InsertAsync(p);
 
@@ -135,7 +135,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             var p = new Person { FirstName = "Dead", LastName = "Pool", Active = true };
             await schema.InsertAsync(p);
 
@@ -159,7 +159,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<User>();
+            var schema = MongoService.GetSchema<User>();
             var user = new User
             {
                 Email = "smiggle@gmali.com",
@@ -194,9 +194,20 @@ namespace MongoClient.Tests
             // The test should throw exception - cannot create same email twice
             //
 
+            //var schemaTypes = new List<Type>
+            //    {
+            //        typeof(CategorySchema),
+            //        typeof(PersonSchema),
+            //        typeof(UserSchema),
+            //        typeof(CategoryDetailSchema)
+            //    };
+            //_mongoService = MongoInitializer.CreateMongoService(schemaTypes, DatabaseName);
+            //_mongoService.UseCamelCase();
+            //_mongoService.Connect();
+
             //
             // Arrange
-            var schema = _mongoService.GetSchema<User>();
+            var schema = MongoService.GetSchema<User>();
             var user = new User
             {
                 Email = "tailwind@jogimali.com",
@@ -231,7 +242,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<User>();
+            var schema = MongoService.GetSchema<User>();
             var user = new User
             {
                 Email = "jembalang@gmali.com",
@@ -261,7 +272,7 @@ namespace MongoClient.Tests
         {
             //
             // Arrange
-            var schema = _mongoService.GetSchema<Category>();
+            var schema = MongoService.GetSchema<Category>();
 
             var cat = CreateObject("cat1", "shawn");
             await schema.InsertAsync(cat);

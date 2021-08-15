@@ -20,6 +20,7 @@ using NUnit.Framework;
 
 namespace MongoClient.Tests
 {
+    [Ignore("dont run")]
     public class BulkCRUDTest : BaseTest
     {
         [OneTimeSetUp]
@@ -69,7 +70,7 @@ namespace MongoClient.Tests
             // Act
             var sw = ProcessStopwatch.Start();
 
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             await schema.BulkWriteAsync(persons);
 
             sw.Stop();
@@ -113,7 +114,7 @@ namespace MongoClient.Tests
             // Act
             var sw = ProcessStopwatch.Start();
 
-            var schema = _mongoService.GetSchema<RawPayloadModel>();
+            var schema = MongoService.GetSchema<RawPayloadModel>();
             await schema.BulkWriteAsync(persons);
 
             sw.Stop();
@@ -183,7 +184,7 @@ namespace MongoClient.Tests
             #endregion
 
             #region Act
-            var schema = _mongoService.GetSchema<RawPayloadModel>();
+            var schema = MongoService.GetSchema<RawPayloadModel>();
             engine.SetSchema(schema);
             engine.Execute();
             Console.WriteLine($"Total Records inserted {recordsToProcess} : [{engine.Elapsed}] secs");
@@ -222,7 +223,7 @@ namespace MongoClient.Tests
             Console.WriteLine($"Total records remaining {parallelExecutionPlan.RemainingRecords}");
             Console.WriteLine($"Total expected threads to spawn {spawnThreadCount}");
             Console.WriteLine($"Total actual threads to spawn {parallelExecutionPlan.ActualThreadCountToSpawn}");
-            var schema = _mongoService.GetSchema<RawPayloadModel>();
+            var schema = MongoService.GetSchema<RawPayloadModel>();
             IEnumerable<WriteModel<RawPayloadModel>> writeModels = null;
 
             for (var threadCount = 0; threadCount < parallelExecutionPlan.ActualThreadCountToSpawn; threadCount++)
@@ -303,7 +304,7 @@ namespace MongoClient.Tests
             // Act
             var sw = ProcessStopwatch.Start();
 
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             var options = new BulkWriteOptions { IsOrdered = false, BypassDocumentValidation = true };
             await schema.BulkWriteAsync(persons, options);
 
@@ -350,7 +351,7 @@ namespace MongoClient.Tests
             // Act
             var sw = ProcessStopwatch.Start();
 
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             await schema.BulkInsertAsync(persons);
 
             sw.Stop();
@@ -392,7 +393,7 @@ namespace MongoClient.Tests
                     Age = GetRandomAge(ages),
                 });
             }
-            var schema = _mongoService.GetSchema<Person>();
+            var schema = MongoService.GetSchema<Person>();
             await schema.BulkInsertAsync(persons);
             var dbTotalDocsAfterBulkInsert = await schema.Collection.CountDocumentsAsync(CreateEmptyFilter<Person>());
             Console.WriteLine($"Total documents found is {dbTotalDocsAfterBulkInsert}");
