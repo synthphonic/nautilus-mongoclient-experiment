@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace MongoClient.Tests
 {
-    public class MongoStartupConfigurationTest : BaseTest
+    public class MongoStartupConfigTest : BaseTest
     {
         [OneTimeSetUp]
         public async Task Setup()

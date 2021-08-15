@@ -9,6 +9,11 @@
 		<PackageReference Include="NUnit" Version="3.13.2" />
 		<PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
+		<PackageReference Include="xunit" Version="2.4.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		  <PrivateAssets>all</PrivateAssets>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Models\" />
@@ -18,9 +23,16 @@
 		<Folder Include="_config\" />
 		<Folder Include="_data\" />
 		<Folder Include="ParallelEngine\" />
+		<Folder Include="Xunit\" />
+		<Folder Include="Xunit\Shared\" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="AppSettings\appsettings.Development.json" />
+		<None Remove="xunit" />
+		<None Remove="xUnit\" />
+		<None Remove="xUnit\CollectionDefinitions\Mock\" />
+		<None Remove="xUnit\Shared\" />
+		<None Remove="xunit.runner.visualstudio" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="_config\appsettings.Development.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'=='true'">
