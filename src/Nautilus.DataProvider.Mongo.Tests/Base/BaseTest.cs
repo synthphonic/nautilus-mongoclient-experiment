@@ -104,6 +104,4 @@ namespace MongoClient.Tests.Base
         }
         #endregion
     }
-
-
 }
