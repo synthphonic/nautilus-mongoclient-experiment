@@ -19,7 +19,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
     /// Represents a Mongo database class for registration, connection and others.
     /// </summary>
     public class MongoService : IMongoService
-    {        
+    {
         private readonly MongoClientSettings _mongoClientSettings;
 
         private MongoClient _mongoClient;
@@ -120,6 +120,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             }
 
             _registeringSchemaTypes = schemaTypes;
+
+            InitializeSchemas();
         }
 
         public void DropDatabase()
@@ -128,7 +130,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             {
                 _mongoClient.DropDatabase(DatabaseName);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new NautilusMongoDbException($"Cannot drop database. Database '{DatabaseName}' does not exists");
             }
@@ -141,6 +143,9 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
         public MongoBaseSchema<TModel> GetSchema<TModel>() where TModel : class, new()
         {
+            if (_initializedSchemas == null || _initializedSchemas.Count() == 0)
+                return default;
+
             var modelInstance = new TModel();
 
             Console.WriteLine($"Fetching schema for {new TModel().GetType().FullName}");
@@ -205,6 +210,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
             try
             {
+                Connect();
+
                 foreach (var schemaType in _registeringSchemaTypes)
                 {
                     var instance = (MongoBaseSchema)Activator.CreateInstance(schemaType, new object[] { _database });
@@ -212,6 +219,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
                     _initializedSchemas.Add(instance);
                 }
+
+
             }
             catch (TimeoutException timeoutEx)
             {
