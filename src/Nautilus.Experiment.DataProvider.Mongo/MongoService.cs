@@ -148,7 +148,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
             var modelInstance = new TModel();
 
-            Console.WriteLine($"Fetching schema for {new TModel().GetType().FullName}");
+            ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"Fetching schema for {new TModel().GetType().FullName}"));
 
             var schemaName = ProcessSchemaName(modelInstance);
 

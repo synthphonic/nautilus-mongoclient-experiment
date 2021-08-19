@@ -11,13 +11,11 @@ namespace Nautilus.Experiment.DataProvider.Mongo
     {
         public static void RegisterMongoDatabases(this IServiceCollection services, AppSettings appSettings, IEnumerable<Type> schemas)
         {
-            var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
-
             MongoServiceFactory mongoFactory = new();
 
             foreach (var providerItem in appSettings.MongoDatabaseProviders)
             {
-                ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
+                ConsoleOutput.Write(typeof(MongoServiceRegistration), ConsoleMessage.Create("Mongo Database Settings..."));
                 Console.WriteLine($"KEY: {providerItem.Key}");
 
                 var providerSetting = providerItem.Value;
@@ -44,13 +42,11 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
         public static void RegisterMongoDatabases(this IServiceCollection services, AppSettings appSettings)
         {
-            var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
-
             MongoServiceFactory mongoFactory = new();
 
             foreach (var providerItem in appSettings.MongoDatabaseProviders)
             {
-                ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
+                ConsoleOutput.Write(typeof(MongoServiceRegistration), ConsoleMessage.Create("Mongo Database Settings..."));
                 Console.WriteLine($"KEY: {providerItem.Key}");
 
                 var providerSetting = providerItem.Value;
