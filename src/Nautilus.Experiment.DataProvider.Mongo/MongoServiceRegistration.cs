@@ -31,8 +31,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
                 var mongoClientSettings = ApplyMongoConnectionSettings(providerSetting);
                 var mongoService = new MongoService(providerItem.Key, mongoClientSettings, providerSetting.Database);
-                mongoService.RegisterSchemas(schemas);
                 mongoService.UseCamelCase();
+                mongoService.RegisterSchemas(schemas);
 
                 mongoFactory.Add(providerItem.Key, mongoService);
             }
@@ -70,71 +70,6 @@ namespace Nautilus.Experiment.DataProvider.Mongo
             services.AddSingleton<IMongoServiceFactory>(mongoFactory);
         }
 
-        [Obsolete("Use the extension method RegisterMongoDatabases() instead", true)]
-        public static void Register(IServiceCollection services, AppSettings appSettings)
-        {
-            var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
-
-            MongoServiceFactory mongoFactory = new();
-
-            foreach (var providerItem in appSettings.MongoDatabaseProviders)
-            {
-                ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
-                Console.WriteLine($"KEY: {providerItem.Key}");
-                var providerSetting = providerItem.Value;
-                Console.WriteLine($"Host: {providerSetting.Host}");
-                Console.WriteLine($"Port: {providerSetting.Port}");
-                Console.WriteLine($"UserName: {providerSetting.UserName}");
-                Console.WriteLine($"Password: {providerSetting.Password}");
-                Console.WriteLine($"Database: {providerSetting.Database}");
-                Console.WriteLine($"SslProtocol: {providerSetting.SslProtocol}");
-                Console.WriteLine($"MongoCredentialMechanism: {providerSetting.MongoCredentialMechanism}");
-                Console.WriteLine($"UseTls: {providerSetting.UseTls}");
-                Console.WriteLine($"ApplyMongoSecurity:  {providerSetting.UseMongoAuthentication}");
-
-                var mongoClientSettings = ApplyMongoConnectionSettings(providerSetting);
-                var mongoService = new MongoService(providerItem.Key, mongoClientSettings, providerSetting.Database);
-                mongoService.UseCamelCase();
-
-                mongoFactory.Add(providerItem.Key, mongoService);
-            }
-
-            services.AddSingleton(mongoFactory);
-        }
-
-        [Obsolete("Use the extension method RegisterMongoDatabases() instead", true)]
-        public static void Register(IServiceCollection services, AppSettings appSettings, IEnumerable<Type> schemas)
-        {
-            var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
-
-            MongoServiceFactory mongoFactory = new();
-
-            foreach (var providerItem in appSettings.MongoDatabaseProviders)
-            {
-                ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
-                Console.WriteLine($"KEY: {providerItem.Key}");
-                var providerSetting = providerItem.Value;
-                Console.WriteLine($"Host: {providerSetting.Host}");
-                Console.WriteLine($"Port: {providerSetting.Port}");
-                Console.WriteLine($"UserName: {providerSetting.UserName}");
-                Console.WriteLine($"Password: {providerSetting.Password}");
-                Console.WriteLine($"Database: {providerSetting.Database}");
-                Console.WriteLine($"SslProtocol: {providerSetting.SslProtocol}");
-                Console.WriteLine($"MongoCredentialMechanism: {providerSetting.MongoCredentialMechanism}");
-                Console.WriteLine($"UseTls: {providerSetting.UseTls}");
-                Console.WriteLine($"ApplyMongoSecurity:  {providerSetting.UseMongoAuthentication}");
-
-                var mongoClientSettings = ApplyMongoConnectionSettings(providerSetting);
-                var mongoService = new MongoService(providerItem.Key, mongoClientSettings, providerSetting.Database);
-                mongoService.RegisterSchemas(schemas);
-                mongoService.UseCamelCase();
-
-                mongoFactory.Add(providerItem.Key, mongoService);
-            }
-
-            services.AddSingleton(mongoFactory);
-        }
-
         private static MongoClientSettings ApplyMongoConnectionSettings(NautilusMongoDatabaseSetting mongoDbSetting)
         {
             var mongoClientSettings = new MongoClientSettings
@@ -163,5 +98,70 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
             return mongoClientSettings;
         }
+
+        //[Obsolete("Use the extension method RegisterMongoDatabases() instead", true)]
+        //public static void Register(IServiceCollection services, AppSettings appSettings)
+        //{
+        //    var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
+
+        //    MongoServiceFactory mongoFactory = new();
+
+        //    foreach (var providerItem in appSettings.MongoDatabaseProviders)
+        //    {
+        //        ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
+        //        Console.WriteLine($"KEY: {providerItem.Key}");
+        //        var providerSetting = providerItem.Value;
+        //        Console.WriteLine($"Host: {providerSetting.Host}");
+        //        Console.WriteLine($"Port: {providerSetting.Port}");
+        //        Console.WriteLine($"UserName: {providerSetting.UserName}");
+        //        Console.WriteLine($"Password: {providerSetting.Password}");
+        //        Console.WriteLine($"Database: {providerSetting.Database}");
+        //        Console.WriteLine($"SslProtocol: {providerSetting.SslProtocol}");
+        //        Console.WriteLine($"MongoCredentialMechanism: {providerSetting.MongoCredentialMechanism}");
+        //        Console.WriteLine($"UseTls: {providerSetting.UseTls}");
+        //        Console.WriteLine($"ApplyMongoSecurity:  {providerSetting.UseMongoAuthentication}");
+
+        //        var mongoClientSettings = ApplyMongoConnectionSettings(providerSetting);
+        //        var mongoService = new MongoService(providerItem.Key, mongoClientSettings, providerSetting.Database);
+        //        mongoService.UseCamelCase();
+
+        //        mongoFactory.Add(providerItem.Key, mongoService);
+        //    }
+
+        //    services.AddSingleton(mongoFactory);
+        //}
+
+        //[Obsolete("Use the extension method RegisterMongoDatabases() instead", true)]
+        //public static void Register(IServiceCollection services, AppSettings appSettings, IEnumerable<Type> schemas)
+        //{
+        //    var callerAndMemberName = CallerMemberHelper.GetClassAndMemberName(typeof(MongoServiceRegistration));
+
+        //    MongoServiceFactory mongoFactory = new();
+
+        //    foreach (var providerItem in appSettings.MongoDatabaseProviders)
+        //    {
+        //        ConsoleOutput.Write($"{callerAndMemberName}, message: Mongo Database Settings...");
+        //        Console.WriteLine($"KEY: {providerItem.Key}");
+        //        var providerSetting = providerItem.Value;
+        //        Console.WriteLine($"Host: {providerSetting.Host}");
+        //        Console.WriteLine($"Port: {providerSetting.Port}");
+        //        Console.WriteLine($"UserName: {providerSetting.UserName}");
+        //        Console.WriteLine($"Password: {providerSetting.Password}");
+        //        Console.WriteLine($"Database: {providerSetting.Database}");
+        //        Console.WriteLine($"SslProtocol: {providerSetting.SslProtocol}");
+        //        Console.WriteLine($"MongoCredentialMechanism: {providerSetting.MongoCredentialMechanism}");
+        //        Console.WriteLine($"UseTls: {providerSetting.UseTls}");
+        //        Console.WriteLine($"ApplyMongoSecurity:  {providerSetting.UseMongoAuthentication}");
+
+        //        var mongoClientSettings = ApplyMongoConnectionSettings(providerSetting);
+        //        var mongoService = new MongoService(providerItem.Key, mongoClientSettings, providerSetting.Database);
+        //        mongoService.RegisterSchemas(schemas);
+        //        mongoService.UseCamelCase();
+
+        //        mongoFactory.Add(providerItem.Key, mongoService);
+        //    }
+
+        //    services.AddSingleton(mongoFactory);
+        //}
     }
 }
