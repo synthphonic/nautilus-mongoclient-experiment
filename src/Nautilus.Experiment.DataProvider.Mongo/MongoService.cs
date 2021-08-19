@@ -63,6 +63,9 @@ namespace Nautilus.Experiment.DataProvider.Mongo
 
         /// <summary>
         /// Use camelCasing on document elements
+        /// <para/>
+        /// Always call this method first before connecting to db via Connect() or
+        /// RegisterSchemas() methods, or any connection related method calls for that matter
         /// </summary>
         public void UseCamelCase()
         {
