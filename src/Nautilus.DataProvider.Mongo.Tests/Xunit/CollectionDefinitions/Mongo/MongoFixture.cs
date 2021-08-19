@@ -46,8 +46,13 @@ namespace Nautilus.DataProvider.Mongo.Tests.Xunit.CollectionDefinitions.Mongo
                       // no need to use system environment. just read the settings from appsettings.json
                       //
                       //configBuilder.ShowConsoleOutput(false);
-                      var baseAppSettingPath = Path.Combine(AppContext.BaseDirectory, "_config");
-                      configBuilder.UseDefaultEnvironment(baseAppSettingPath);
+
+                      //configBuilder.UseDefaultEnvironment(baseAppSettingPath);
+                      configBuilder.UseSystemEnvironments(new SystemEnvironmentOptions
+                      {
+                          BaseAppSetting = Path.Combine(AppContext.BaseDirectory, "_config"),
+                          UseDefault = true
+                      });
                   })
                   .ConfigureLogging((loggingBuilder) =>
                   {
