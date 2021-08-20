@@ -48,7 +48,7 @@ namespace Nautilus.DataProvider.Mongo.Tests.Xunit.CollectionDefinitions.Mongo
                       //configBuilder.ShowConsoleOutput(false);
 
                       //configBuilder.UseDefaultEnvironment(baseAppSettingPath);
-                      configBuilder.UseSystemEnvironments(new SystemEnvironmentOptions
+                      configBuilder.UseEnvironment(new SystemEnvironmentOptions
                       {
                           BaseAppSetting = Path.Combine(AppContext.BaseDirectory, "_config"),
                           UseDefault = true
