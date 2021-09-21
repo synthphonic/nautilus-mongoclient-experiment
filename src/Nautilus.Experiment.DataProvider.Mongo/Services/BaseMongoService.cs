@@ -24,7 +24,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 			}
 			catch (Exception ex)
 			{
-				Nautilus.ConsoleOutput.Write(GetType(), $"Exception: {ex.Message}");
+				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
 
 				//TODO: BaseMongoService class will be relocated to Nautilus experimental mongo project. need to refactor this as well
 				throw new NautilusMongoDbException(ex.Message, ex);
@@ -47,7 +47,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 			}
 			catch (Exception ex)
 			{
-                ConsoleOutput.Write(GetType(), $"Exception: {ex.Message}");
+				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
 				throw new NautilusMongoDbException(ex.Message, ex);
 			}
 		}
@@ -70,7 +70,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 			}
 			catch (Exception ex)
 			{
-				Nautilus.ConsoleOutput.Write(GetType(), $"Exception: {ex.Message}");
+				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
 				throw new NautilusMongoDbException(ex.Message, ex);
 			}
 
@@ -93,7 +93,7 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 			}
 			catch (Exception ex)
 			{
-				Nautilus.ConsoleOutput.Write(GetType(), $"Exception: {ex.Message}");
+				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
 				throw new NautilusMongoDbException(ex.Message, ex);
 			}
 		}
@@ -112,32 +112,32 @@ namespace Nautilus.Experiment.DataProvider.Mongo.Services
 			}
 			catch (Exception ex)
 			{
-				Nautilus.ConsoleOutput.Write(GetType(), $"Exception: {ex.Message}");
-				throw new NautilusMongoDbException(ex.Message, ex);
+                ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
+                throw new NautilusMongoDbException(ex.Message, ex);
 			}
 		}
 
 		protected void Connect()
 		{
-            ConsoleOutput.Write(GetType());
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
 			_mongoService.Connect();
 		}
 
 		protected MongoBaseSchema<TModel> GetSchema()
 		{
-            ConsoleOutput.Write(GetType());
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
 			return _mongoService.GetSchema<TModel>();
 		}
 
 		protected MongoBaseSchema<TMongoModel> GetSchema<TMongoModel>() where TMongoModel : class, new()
 		{
-            ConsoleOutput.Write(GetType());
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
 			return _mongoService.GetSchema<TMongoModel>();
 		}
 
 		protected virtual void SetMongoService(IMongoService service)
         {
-			ConsoleOutput.Write(GetType());
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
 			_mongoService = service;
 		}
 	}
