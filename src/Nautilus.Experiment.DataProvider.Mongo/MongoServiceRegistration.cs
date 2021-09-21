@@ -22,7 +22,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
                 Console.WriteLine($"Host: {providerSetting.Host}");
                 Console.WriteLine($"Port: {providerSetting.Port}");
                 Console.WriteLine($"UserName: {providerSetting.UserName}");
-                Console.WriteLine($"Password: {providerSetting.Password}");
+                //Console.WriteLine($"Password: {providerSetting.Password}");
+                Console.WriteLine($"Password: **********");
                 Console.WriteLine($"Database: {providerSetting.Database}");
                 Console.WriteLine($"SslProtocol: {providerSetting.SslProtocol}");
                 Console.WriteLine($"MongoCredentialMechanism: {providerSetting.MongoCredentialMechanism}");
@@ -53,7 +54,8 @@ namespace Nautilus.Experiment.DataProvider.Mongo
                 Console.WriteLine($"Host: {providerSetting.Host}");
                 Console.WriteLine($"Port: {providerSetting.Port}");
                 Console.WriteLine($"UserName: {providerSetting.UserName}");
-                Console.WriteLine($"Password: {providerSetting.Password}");
+                //Console.WriteLine($"Password: {providerSetting.Password}");
+                Console.WriteLine($"Password: **********");
                 Console.WriteLine($"Database: {providerSetting.Database}");
                 Console.WriteLine($"SslProtocol: {providerSetting.SslProtocol}");
                 Console.WriteLine($"MongoCredentialMechanism: {providerSetting.MongoCredentialMechanism}");
