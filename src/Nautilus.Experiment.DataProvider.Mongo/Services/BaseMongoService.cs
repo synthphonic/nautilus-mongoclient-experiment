@@ -1,144 +1,136 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MongoDB.Driver;
-using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
-using Nautilus.Experiment.DataProvider.Mongo.Schema;
+namespace Nautilus.Experiment.DataProvider.Mongo.Services;
 
-namespace Nautilus.Experiment.DataProvider.Mongo.Services
+public class BaseMongoService<TModel, TIdField, TUserIdField> where TModel : MongoBaseModel<TIdField, TUserIdField>, new()
 {
-    public class BaseMongoService<TModel, TIdField, TUserIdField> where TModel : MongoBaseModel<TIdField, TUserIdField>, new()
+	private IMongoService _mongoService;
+
+	public async Task DeleteAsync(TIdField id)
 	{
-		private IMongoService _mongoService;
+		ConsoleOutput.Write(GetType());
 
-		public async Task DeleteAsync(TIdField id)
+		try
 		{
-			ConsoleOutput.Write(GetType());
+			Connect();
 
-			try
-			{
-				Connect();
-
-				var schema = _mongoService.GetSchema<TModel>();
-				var foundTag = await schema.DeleteAsync(id);
-			}
-			catch (Exception ex)
-			{
-				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
-
-				//TODO: BaseMongoService class will be relocated to Nautilus experimental mongo project. need to refactor this as well
-				throw new NautilusMongoDbException(ex.Message, ex);
-			}
+			var schema = _mongoService.GetSchema<TModel>();
+			var foundTag = await schema.DeleteAsync(id);
 		}
-
-		public async Task<TModel> GetAsync(TIdField id)
+		catch (Exception ex)
 		{
-			ConsoleOutput.Write(GetType());
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
 
-			try
-			{
-				Connect();
-
-				var schema = _mongoService.GetSchema<TModel>();
-				var filter = Builders<TModel>.Filter.Where(t => t.Id.Equals(id));
-				var foundRecord = await schema.FindAsync(filter);
-
-				return foundRecord;
-			}
-			catch (Exception ex)
-			{
-				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
-				throw new NautilusMongoDbException(ex.Message, ex);
-			}
+			//TODO: BaseMongoService class will be relocated to Nautilus experimental mongo project. need to refactor this as well
+			throw new NautilusMongoDbException(ex.Message, ex);
 		}
+	}
 
-		public async Task<IEnumerable<TModel>> GetListAsync(TUserIdField userId)
+	public async Task<TModel> GetAsync(TIdField id)
+	{
+		ConsoleOutput.Write(GetType());
+
+		try
 		{
-            ConsoleOutput.Write(GetType());
+			Connect();
 
-			IEnumerable<TModel> models = null;
+			var schema = _mongoService.GetSchema<TModel>();
+			var filter = Builders<TModel>.Filter.Where(t => t.Id.Equals(id));
+			var foundRecord = await schema.FindAsync(filter);
 
-			try
-			{
-				Connect();
-
-				var schema = _mongoService.GetSchema<TModel>();
-
-				var filter = Builders<TModel>.Filter.Where(t => t.UserId.Equals(userId));
-				models = await schema.FindManyAsync(filter);
-
-			}
-			catch (Exception ex)
-			{
-				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
-				throw new NautilusMongoDbException(ex.Message, ex);
-			}
-
-			return models;
+			return foundRecord;
 		}
-
-		public async Task SaveAsync(TModel model)
+		catch (Exception ex)
 		{
-			ConsoleOutput.Write(GetType());
-
-			try
-			{
-				Connect();
-
-				var schema = _mongoService.GetSchema<TModel>();
-
-				Nautilus.ConsoleOutput.Write(GetType(), message: $"schema is not be null? [{schema != null}]");
-
-				await schema.InsertAsync(model);
-			}
-			catch (Exception ex)
-			{
-				ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
-				throw new NautilusMongoDbException(ex.Message, ex);
-			}
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
+			throw new NautilusMongoDbException(ex.Message, ex);
 		}
+	}
 
-		public async Task UpsertAsync(TModel model)
+	public async Task<IEnumerable<TModel>> GetListAsync(TUserIdField userId)
+	{
+		ConsoleOutput.Write(GetType());
+
+		IEnumerable<TModel> models = null;
+
+		try
 		{
-			ConsoleOutput.Write(GetType());
+			Connect();
 
-			try
-			{
-				Connect();
+			var schema = _mongoService.GetSchema<TModel>();
 
-				var schema = _mongoService.GetSchema<TModel>();
-				//await schema.UpsertAsync(t => t.Id == model.Id, model);
-				await schema.UpsertAsync(t => t.Id.Equals(model.Id), model);
-			}
-			catch (Exception ex)
-			{
-                ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
-                throw new NautilusMongoDbException(ex.Message, ex);
-			}
+			var filter = Builders<TModel>.Filter.Where(t => t.UserId.Equals(userId));
+			models = await schema.FindManyAsync(filter);
+
 		}
-
-		protected void Connect()
+		catch (Exception ex)
 		{
-			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
-			_mongoService.Connect();
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
+			throw new NautilusMongoDbException(ex.Message, ex);
 		}
 
-		protected MongoBaseSchema<TModel> GetSchema()
+		return models;
+	}
+
+	public async Task SaveAsync(TModel model)
+	{
+		ConsoleOutput.Write(GetType());
+
+		try
 		{
-			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
-			return _mongoService.GetSchema<TModel>();
-		}
+			Connect();
 
-		protected MongoBaseSchema<TMongoModel> GetSchema<TMongoModel>() where TMongoModel : class, new()
+			var schema = _mongoService.GetSchema<TModel>();
+
+			Nautilus.ConsoleOutput.Write(GetType(), message: $"schema is not be null? [{schema != null}]");
+
+			await schema.InsertAsync(model);
+		}
+		catch (Exception ex)
 		{
-			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
-			return _mongoService.GetSchema<TMongoModel>();
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
+			throw new NautilusMongoDbException(ex.Message, ex);
 		}
+	}
 
-		protected virtual void SetMongoService(IMongoService service)
-        {
-			ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
-			_mongoService = service;
+	public async Task UpsertAsync(TModel model)
+	{
+		ConsoleOutput.Write(GetType());
+
+		try
+		{
+			Connect();
+
+			var schema = _mongoService.GetSchema<TModel>();
+			//await schema.UpsertAsync(t => t.Id == model.Id, model);
+			await schema.UpsertAsync(t => t.Id.Equals(model.Id), model);
 		}
+		catch (Exception ex)
+		{
+			ConsoleOutput.Write(GetType(), ConsoleMessage.Create($"{ex.Message}"));
+			throw new NautilusMongoDbException(ex.Message, ex);
+		}
+	}
+
+	protected void Connect()
+	{
+		ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
+		_mongoService.Connect();
+	}
+
+	protected MongoBaseSchema<TModel> GetSchema()
+	{
+		ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
+		return _mongoService.GetSchema<TModel>();
+	}
+
+	protected MongoBaseSchema<TMongoModel> GetSchema<TMongoModel>() where TMongoModel : class, new()
+	{
+		ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
+		return _mongoService.GetSchema<TMongoModel>();
+	}
+
+	protected virtual void SetMongoService(IMongoService service)
+	{
+		ConsoleOutput.Write(GetType(), ConsoleMessage.Create(""));
+		_mongoService = service;
 	}
 }

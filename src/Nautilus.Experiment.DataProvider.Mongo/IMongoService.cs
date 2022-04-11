@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Nautilus.Experiment.DataProvider.Mongo.Schema;
-
-namespace Nautilus.Experiment.DataProvider.Mongo
+﻿namespace Nautilus.Experiment.DataProvider.Mongo
 {
     /// <summary>
     /// Represents a Mongo database class for registration, connection and others.

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<Copyright>FiftyOneLab Tech 2018-2021</Copyright>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="NUnit" Version="3.13.2" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		  <PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Models\" />
@@ -33,6 +34,7 @@
 		<None Remove="xUnit\CollectionDefinitions\Mock\" />
 		<None Remove="xUnit\Shared\" />
 		<None Remove="xunit.runner.visualstudio" />
+		<None Remove="Microsoft.Extensions.Hosting" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="_config\appsettings.Development.json" Condition="'$(ExcludeConfigFilesFromBuildOutput)'=='true'">
@@ -51,5 +53,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Nautilus.Experiment.DataProvider.Mongo\Nautilus.Experiment.DataProvider.Mongo.csproj" />
+	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus\Nautilus.csproj" />
 	</ItemGroup>
 </Project>
