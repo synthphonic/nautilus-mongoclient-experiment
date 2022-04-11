@@ -1,13 +1,9 @@
-using MongoDB.Bson;
-using Nautilus.Experiment.DataProvider.Mongo.Attributes;
+namespace MongoClient.Tests.Models;
 
-namespace MongoClient.Tests.Models
+[CollectionName("Categories")]
+public class Category
 {
-    [CollectionName("Categories")]
-    public class Category
-    {
-        public ObjectId Id { get; set; }
-        public string CategoryName { get; set; }
-        public string UserId { get; set; }
-    }
+    public ObjectId Id { get; set; }
+    public string CategoryName { get; set; }
+    public string UserId { get; set; }
 }

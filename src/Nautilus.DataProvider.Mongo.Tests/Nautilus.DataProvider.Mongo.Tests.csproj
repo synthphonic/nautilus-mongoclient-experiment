@@ -53,6 +53,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Nautilus.Experiment.DataProvider.Mongo\Nautilus.Experiment.DataProvider.Mongo.csproj" />
-	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus\Nautilus.csproj" />
+	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus.Core\Nautilus.Core.csproj" />
 	</ItemGroup>
 </Project>

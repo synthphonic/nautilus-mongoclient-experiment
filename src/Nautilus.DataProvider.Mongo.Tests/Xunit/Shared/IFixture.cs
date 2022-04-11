@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Nautilus.DataProvider.Mongo.Tests.Xunit.Shared;
 
-namespace Nautilus.DataProvider.Mongo.Tests.Xunit.Shared
+public interface IFixture
 {
-    public interface IFixture
-    {
-        IServiceProvider Services { get; }
-    }
+    IServiceProvider Services { get; }
 }

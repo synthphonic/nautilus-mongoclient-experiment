@@ -1,7 +1,6 @@
-﻿namespace Nautilus.DataProvider.Mongo.Tests.Xunit.Shared
+﻿namespace Nautilus.DataProvider.Mongo.Tests.Xunit.Shared;
+
+public class TestConstants
 {
-    public class TestConstants
-    {
-        public const string MongoDBKey = "MongoBuilderPatternDb";
-    }
+    public const string MongoDBKey = "MongoBuilderPatternDb";
 }

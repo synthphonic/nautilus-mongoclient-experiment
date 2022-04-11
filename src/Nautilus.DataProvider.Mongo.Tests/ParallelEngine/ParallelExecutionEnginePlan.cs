@@ -1,19 +1,18 @@
-﻿namespace MongoClient.Tests.ParallelEngine
+﻿namespace MongoClient.Tests.ParallelEngine;
+
+internal class ParallelExecutionEnginePlan
 {
-    internal class ParallelExecutionEnginePlan
+    public static ParallelExecutionInfoContext GenerateParallelExecutionPlan(int threadCount, int recordCount)
     {
-        public static ParallelExecutionInfoContext GenerateParallelExecutionPlan(int threadCount, int recordCount)
-        {
-            var actualThreadCountToSpawn = threadCount;
-            var totalRecordperThread = recordCount / threadCount;
-            var remainders = recordCount % threadCount;
+        var actualThreadCountToSpawn = threadCount;
+        var totalRecordperThread = recordCount / threadCount;
+        var remainders = recordCount % threadCount;
 
-            if (remainders > 0)
-                actualThreadCountToSpawn++;
+        if (remainders > 0)
+            actualThreadCountToSpawn++;
 
-            var context = new ParallelExecutionInfoContext(totalRecordperThread, remainders, actualThreadCountToSpawn);
+        var context = new ParallelExecutionInfoContext(totalRecordperThread, remainders, actualThreadCountToSpawn);
 
-            return context;
-        }
+        return context;
     }
 }

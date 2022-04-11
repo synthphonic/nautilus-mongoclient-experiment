@@ -1,7 +1,6 @@
-﻿namespace Nautilus.DataProvider.Mongo.Tests.Xunit.CollectionDefinitions
+﻿namespace Nautilus.DataProvider.Mongo.Tests.Xunit.CollectionDefinitions;
+
+public class CollectionDefinitionKeys
 {
-    public class CollectionDefinitionKeys
-    {
-        public const string MongoDb = "MongoDb";
-    }
+    public const string MongoDb = "MongoDb";
 }
