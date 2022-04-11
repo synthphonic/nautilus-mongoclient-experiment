@@ -10,6 +10,8 @@ global using Microsoft.Extensions.DependencyInjection;
 global using MongoDB.Bson.Serialization.Attributes;
 global using MongoDB.Bson.Serialization.Conventions;
 global using MongoDB.Driver;
+global using Nautilus.Configuration;
+global using Nautilus.Data.Exceptions;
 global using Nautilus.Experiment.DataProvider.Mongo.Attributes;
 global using Nautilus.Experiment.DataProvider.Mongo.Exceptions;
 global using Nautilus.Experiment.DataProvider.Mongo.Schema;
