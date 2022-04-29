@@ -18,6 +18,6 @@
 		<Folder Include="Services\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\nautilus-platform\nautilus\Nautilus.Core\Nautilus.Core.csproj" />
+	  <ProjectReference Include="..\..\..\..\nautilus\Nautilus.Core\Nautilus.Core.csproj" />
 	</ItemGroup>
 </Project>
